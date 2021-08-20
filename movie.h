@@ -23,13 +23,15 @@ struct MovieNode {
     struct MovieNode* next;
 };
 
-void search_using_name(char *str);
-void search_using_id(int search_id);
+struct Movie search_using_name(char *str);
+struct Movie search_using_id(int search_id);
 struct MovieNode* read_file_till_num(int n);
-void write_file();
-void read_file();
+void write_file(char* movieName, int rating);
+struct MovieNode* read_file();
 int num_of_data();
 
 //linked list related funciton decalrations
 struct MovieNode* getNewNode();
+void copyFromMovieToNode(struct MovieNode* node, struct Movie* movie);
+int getNewId();
 #endif

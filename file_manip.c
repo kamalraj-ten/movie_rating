@@ -23,10 +23,12 @@ void copyFromMovieToNode(struct MovieNode* node, struct Movie* movie) {
     node->id = movie->id;
 }
 
-
+int getNewId() {
+    return num_of_data+1;
+}
 //==================================
 
-void search_using_name(char *str)
+struct Movie search_using_name(char *str)
 {
     FILE *infile;
     struct Movie input;
@@ -44,15 +46,15 @@ void search_using_name(char *str)
     {
         if(strcmp(str,input.name)==0)
         {
-            printf ("id = %d name = %s rating = %d\n", input.id,input.name, input.rating);
-            return ;
+            //printf ("id = %d name = %s rating = %d\n", input.id,input.name, input.rating);
+            return input;
         }
     }
     printf("\n data not found");
     fclose (infile);
 }
 
-void search_using_id(int search_id)
+struct Movie search_using_id(int search_id)
 {
     FILE *infile;
     struct Movie input;
@@ -66,8 +68,8 @@ void search_using_id(int search_id)
     {
         if(input.id==search_id)
         {
-            printf ("id = %d name = %s rating = %d\n", input.id,input.name, input.rating);
-            return ;
+            //printf ("id = %d name = %s rating = %d\n", input.id,input.name, input.rating);
+            return input;
         }
     }
     printf("\n data not found");
@@ -124,7 +126,7 @@ struct MovieNode* read_file_till_num(int n)
 // }
 
 
-void write_file()
+void write_file(char* movieName, int rating)
 {
     FILE *outfile;
 	outfile = fopen ("Movie.dat", "a");
@@ -134,13 +136,17 @@ void write_file()
 		exit (1);
 	}
     struct Movie input;
-    scanf("%[^\n]",input.name);
+    //scanf("%[^\n]",input.name);
+    strcpy(input.name, movieName);
     for(int i = 0; input.name[i]; i++)
     {
         input.name[i] = tolower(input.name[i]);
     }
-    scanf ("%d", &input.id);
-    scanf ("%d", &input.rating);
+    //scanf ("%d", &input.id);
+    //scanf ("%d", &input.rating);
+    input.id = getNewId();
+    input.rating = rating;
+
 	fwrite (&input, sizeof(struct Movie), 1, outfile);
 	if(fwrite != 0)
 		printf("contents to file written successfully !\n");
@@ -150,19 +156,25 @@ void write_file()
 }
 
 /* reads and prints the entire file to stdout */
-void read_file()
-{
-    FILE *infile;
-    struct Movie input;
-    infile = fopen ("Movie.dat", "r");
-    if (infile == NULL)
-    {
-        fprintf(stderr, "\nError opening file\n");
-        exit (1);
-    }
-    while(fread(&input, sizeof(struct Movie), 1, infile))
-        printf ("id = %d name = %s rating = %d\n", input.id,input.name, input.rating);
-    fclose (infile);
+// void read_file()
+// {
+//     FILE *infile;
+//     struct Movie input;
+//     infile = fopen ("Movie.dat", "r");
+//     if (infile == NULL)
+//     {
+//         fprintf(stderr, "\nError opening file\n");
+//         exit (1);
+//     }
+//     while(fread(&input, sizeof(struct Movie), 1, infile))
+//         printf ("id = %d name = %s rating = %d\n", input.id,input.name, input.rating);
+//     fclose (infile);
+// }
+
+// simplifying the read_file
+struct MovieNode* read_file() {
+    int size = num_of_data();
+    return read_file_till_num(size);
 }
 
 /* return the number of movie data stored */
