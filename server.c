@@ -82,10 +82,10 @@ int main()
             readval = recv(client_fd, &m.rating, sizeof(int), 0);
             // update file
         }
-        else if( opt == 2){//view movie rating
-            int num;
-            recv(client_fd, &num, 
-            )
+        /*else if( opt == 2){//view movie rating
+          //  int num;
+            //recv(client_fd, &num, 
+            //)
         }
         int readval = recv(client_fd, m.name, NAMESIZE, 0);
         readval = recv(client_fd, &m.rating, sizeof(int), 0);
@@ -93,7 +93,7 @@ int main()
     
         readval = recv(client_fd, a.name, NAMESIZE, 0);
         readval = recv(client_fd, &a.rating, sizeof(int), 0);
-        printMovie(a);
+        printMovie(a);*/
     }
     return 0;
 }
