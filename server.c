@@ -61,12 +61,16 @@ int main()
         return -1;
     }
 
-    struct Movie m;
+    struct Movie m, a;
     // recv movie
     // name
     int readval = recv(client_fd, m.name, NAMESIZE, 0);
     readval = recv(client_fd, &m.rating, sizeof(int), 0);
     printMovie(m);
+
+    readval = recv(client_fd, a.name, NAMESIZE, 0);
+    readval = recv(client_fd, &a.rating, sizeof(int), 0);
+    printMovie(a);
 
     return 0;
 }

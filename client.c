@@ -36,6 +36,13 @@ int main()
     int rating = 4;
     send(socket_fd, &rating, sizeof(rating), 0);
 
+    // trining to send for second time
+    char* newname = "theri\0";
+    send(socket_fd, newname, strlen(newname), 0);
+
+    int newrating = 3;
+    send(socket_fd, &newrating, sizeof(newrating), 0);
+
     printf("Completed sending data\n");
 
     return 0;
