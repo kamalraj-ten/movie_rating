@@ -47,17 +47,15 @@ void menu(int socket_fd){
     int option;
     //loop unitl user wants to exit
     while (exit_flag==0){
-        printf("1. Add new movie rating\n");
-        printf("2. Modify movie rating\n");
-        printf("3. View movie rating\n");
-        printf("4. Exit\n");
+        printf("%d. Add new movie rating\n",ADD_RATING);
+        printf("%d. View movie rating\n",VIEW_RATING);
+        printf("%d. Exit\n",EXIT);
         printf("enter option: ");
         scanf("%d",&option);
         if(option==ADD_RATING){
             //function to add rating
-        }else if(option==MOD_RATING){
-            //function to modify rating
-        }else if(option==VIEW_RATING){
+        }
+        else if(option==VIEW_RATING){
             //function to view movie rating
         }else if(option==EXIT){
             exit_flag=1;
