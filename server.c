@@ -5,16 +5,11 @@
 #include <sys/socket.h>
 #include <stdlib.h>
 
-#define PORT 8888
+#include "movie.h"
+
 #define BUFFERSIZE 1024
-#define NAMESIZE 20
 
 //========= MOVIE DEFINITION AND FUNCTIONS =================
-
-struct Movie {
-    char name[NAMESIZE];
-    int rating;
-};
 
 void printMovie(struct Movie m) {
     printf("name: %s\trating: %d\n", m.name, m.rating);

@@ -3,15 +3,10 @@
 #include <sys/socket.h>
 #include <string.h>
 #include <unistd.h>
+        
+#include "movie.h"
 
-#define PORT 8888           //port number
 #define MAX 80              //max input size
-
-//optinons user can choose
-#define ADD_RATING 1        
-#define MOD_RATING 2
-#define VIEW_RATING 3
-#define EXIT 4
 
 void menu();
 
