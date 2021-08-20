@@ -2,12 +2,20 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <string.h>
+#include <unistd.h>
 
-#define PORT 8888
-#define NAMESIZE 20
+#define PORT 8888           //port number
+#define MAX 80              //max input size
 
-int main()
-{
+//optinons user can choose
+#define ADD_RATING 1        
+#define MOD_RATING 2
+#define VIEW_RATING 3
+#define EXIT 4
+
+void menu();
+
+int main(){
     int socket_fd = socket(PF_INET, SOCK_STREAM, 0);
 
     if (socket_fd <= 0) {
@@ -19,8 +27,7 @@ int main()
     serv_addr.sin_port = htons(PORT);
     serv_addr.sin_family = PF_INET;
 
-    if(inet_pton(PF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0) 
-    {
+    if(inet_pton(PF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0) {
         printf("\nInvalid address/ Address not supported \n");
         return -1;
     }
@@ -29,21 +36,38 @@ int main()
         printf("Connection error\n");
         return -1;
     }
+    printf("Connected to server\n");
+    
+    menu(socket_fd);
 
-    char name[NAMESIZE] = "asuran\0";
-    send(socket_fd, name, strlen(name), 0);
-
-    int rating = 4;
-    send(socket_fd, &rating, sizeof(rating), 0);
-
-    // trining to send for second time
-    char* newname = "theri\0";
-    send(socket_fd, newname, strlen(newname), 0);
-
-    int newrating = 3;
-    send(socket_fd, &newrating, sizeof(newrating), 0);
-
-    printf("Completed sending data\n");
-
+    close(socket_fd);
     return 0;
+}
+
+void menu(int socket_fd){
+    // used to check if user wants to end the connection
+    //return to main() function if exit_flag is 1 
+    int exit_flag=0;
+
+    int option;
+    //loop unitl user wants to exit
+    while (exit_flag==0){
+        printf("1. Add new movie rating\n");
+        printf("2. Modify movie rating\n");
+        printf("3. View movie rating\n");
+        printf("4. Exit\n");
+        printf("enter option: ");
+        scanf("%d",&option);
+        if(option==ADD_RATING){
+            //function to add rating
+        }else if(option==MOD_RATING){
+            //function to modify rating
+        }else if(option==VIEW_RATING){
+            //function to view movie rating
+        }else if(option==EXIT){
+            exit_flag=1;
+        }else{
+            printf("Incorrect option\n\n");
+        }
+    }
 }
