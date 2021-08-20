@@ -16,7 +16,12 @@ struct Movie {
     int rating;
 };
 
-void read_file();
+void search_using_name(char *str);
+void search_using_id(int search_id);
 void read_file_till_num(int n);
+void write_file();
+void read_file();
+int num_of_data();
+
 
 #endif
