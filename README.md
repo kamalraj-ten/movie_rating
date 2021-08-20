@@ -1,4 +1,6 @@
 # movie_rating
+https://github.com/kamalraj-ten/movie_rating.git
+
 a movie rating project in c for computer network
 
 first run the server then run the client in separate terminal
