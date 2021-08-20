@@ -16,12 +16,20 @@ struct Movie {
     int rating;
 };
 
+struct MovieNode {
+    int id;
+    char name[NAMESIZE];
+    int rating;
+    struct MovieNode* next;
+};
+
 void search_using_name(char *str);
 void search_using_id(int search_id);
-void read_file_till_num(int n);
+struct MovieNode* read_file_till_num(int n);
 void write_file();
 void read_file();
 int num_of_data();
 
-
+//linked list related funciton decalrations
+struct MovieNode* getNewNode();
 #endif

@@ -5,6 +5,27 @@
 
 #include "movie.h"
 
+//==================================
+//  new methods
+
+struct MovieNode* getNewNode() {
+    struct MovieNode* node = (struct MovieNode*) malloc(sizeof(struct MovieNode));
+    node->next = NULL;
+    strcpy(node->name, "\0");
+    node->rating = 0;
+
+    return node;
+}
+
+void copyFromMovieToNode(struct MovieNode* node, struct Movie* movie) {
+    node->rating = movie->rating;
+    strcpy(node->name, movie->name);
+    node->id = movie->id;
+}
+
+
+//==================================
+
 void search_using_name(char *str)
 {
     FILE *infile;
@@ -53,23 +74,38 @@ void search_using_id(int search_id)
     fclose (infile);
 }
 
-void read_file_till_num(int n)
+struct MovieNode* read_file_till_num(int n)
 {
     FILE *infile;
     struct Movie input;
+    struct MovieNode* head = NULL;
+    struct MovieNode* tail = head;
+
     infile = fopen ("Movie.dat", "r");
     if (infile == NULL)
     {
         fprintf(stderr, "\nError opening file\n");
         exit (1);
     }
+
     int count=0;
     while(fread(&input, sizeof(struct Movie), 1, infile) && count<n)
     {
-        printf ("id = %d name = %s rating = %d\n", input.id,input.name, input.rating);
+        //printf ("id = %d name = %s rating = %d\n", input.id,input.name, input.rating);
+        struct MovieNode* newNode = getNewNode();
+        copyFromMovieToNode(newNode, &input);
+        if (head == NULL) {
+            head = newNode;
+            tail = head;
+        } else {
+            tail->next = newNode;
+            tail = newNode;
+        }
+        
         count++;
     }
     fclose (infile);
+    return head;
 }
 
 // void read_file()
