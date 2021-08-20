@@ -49,6 +49,9 @@ int main()
         return -1;
     }
 
+    //read_file();
+    read_file_till_num(2);
+
      // listening
     if (listen(server_fd, 2) < 0)
     {

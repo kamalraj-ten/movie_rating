@@ -11,8 +11,12 @@
 #define EXIT 4
 
 struct Movie {
+    int id;
     char name[NAMESIZE];
     int rating;
 };
+
+void read_file();
+void read_file_till_num(int n);
 
 #endif
