@@ -26,7 +26,7 @@ void printMovie(struct Movie m) {
 
 int main()
 {
-
+    
     // reading the file to a linked list
     read_file();
     printf("%d\n", getNewId());
