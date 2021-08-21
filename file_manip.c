@@ -24,7 +24,7 @@ void copyFromMovieToNode(struct MovieNode* node, struct Movie* movie) {
 }
 
 int getNewId() {
-    return num_of_data+1;
+    return num_of_data()+1;
 }
 //==================================
 
@@ -51,7 +51,9 @@ struct Movie search_using_name(char *str)
         }
     }
     printf("\n data not found");
+    
     fclose (infile);
+    return NULL;
 }
 
 struct Movie search_using_id(int search_id)
@@ -145,8 +147,14 @@ void write_file(char* movieName, int rating)
     //scanf ("%d", &input.id);
     //scanf ("%d", &input.rating);
     input.id = getNewId();
-    input.rating = rating;
-
+    if( input = search_using_name(input.name) != NULL){
+        input.rating = (input.rating + rating)/2;
+    }
+    else{
+        input.rating = rating;
+        
+    }
+    
 	fwrite (&input, sizeof(struct Movie), 1, outfile);
 	if(fwrite != 0)
 		printf("contents to file written successfully !\n");

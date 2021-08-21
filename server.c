@@ -6,21 +6,17 @@
 #include <stdlib.h>
 
 #include "movie.h"
+#include "file_manip.c"
 
 #define BUFFERSIZE 1024
 
 //========= MOVIE DEFINITION AND FUNCTIONS =================
 
 void printMovie(struct Movie m) {
-    printf("name: %s\trating: %d\n", m.name, m.rating);
+    printf("name: %s\trating: %f\n", m.name, m.rating);
 }
 
 //========= END MOVIE DEFINITION AND FUNCTIONS ==============
-
-//========= START FILE MANIPULATION FUNCTIONS ====================
-
-
-//======== END FILE MANIPULATION FUNCTIONS =======================
 
 int main()
 {
@@ -32,8 +28,7 @@ int main()
 
     //forcefully attaching socket to port
     int opt = 1;
-    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
-    {
+    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
         perror("setsockopt");
         return -1;
     }
@@ -62,38 +57,36 @@ int main()
     //accepting other sockets
     // currently accepting only one
     int client_fd, addr_len = sizeof(address);
-    if ((client_fd = accept(server_fd, (struct sockaddr *)&address, (socklen_t *)&addr_len)) < 0)
-    {
+    if ((client_fd = accept(server_fd, (struct sockaddr *)&address, (socklen_t *)&addr_len)) < 0){
         printf("Error accepting sockets\n");
         return -1;
     }
 
-    struct Movie a;
-    // recv movie
-    // name
-
-    int opt;
+    printf("client connected\n");
+    opt=0;
     while(1){
         //getting option 
         recv(client_fd, &opt, sizeof(int), 0);
-        if( opt == 1){//Add new movie rating
+        if( opt == ADD_RATING){
             struct Movie m;
             int readval = recv(client_fd, m.name, NAMESIZE, 0);
-            readval = recv(client_fd, &m.rating, sizeof(int), 0);
+            readval = recv(client_fd, &m.rating, sizeof(float), 0);
             // update file
+            
         }
-        // else if( opt == 2){//view movie rating
-        //     int num;
-        //     recv(client_fd, &num, 
-        //     )
-        // }
-        // int readval = recv(client_fd, m.name, NAMESIZE, 0);
-        // readval = recv(client_fd, &m.rating, sizeof(int), 0);
-        // printMovie(m);
+        else if( opt == 2){//view movie rating
+            //recv(client_fd, &num, )
+        }
+        //int readval = recv(client_fd, m.name, NAMESIZE, 0);
+        //readval = recv(client_fd, &m.rating, sizeof(int), 0);
+        //printMovie(m);
     
-        // readval = recv(client_fd, a.name, NAMESIZE, 0);
-        // readval = recv(client_fd, &a.rating, sizeof(int), 0);
-        // printMovie(a);
+        //readval = recv(client_fd, a.name, NAMESIZE, 0);
+        //readval = recv(client_fd, &a.rating, sizeof(int), 0);
+        //printMovie(a);
+        //readval = recv(client_fd, a.name, NAMESIZE, 0);
+        //readval = recv(client_fd, &a.rating, sizeof(int), 0);
+        //printMovie(a);*/
     }
     return 0;
 }

@@ -6,7 +6,7 @@
         
 #include "movie.h"
 
-#define MAX 80              //max input size
+#define MAX 20              //max input size
 
 void menu();
 
@@ -39,6 +39,19 @@ int main(){
     return 0;
 }
 
+void add_rating(int choice,int socket_fd){
+    int mov_id;
+    char mov_name[NAMESIZE];
+    float movierating;
+    printf("Enter the movie name:");
+    scanf("%[^\n]%*c",mov_name);
+    printf("Enter the movie rating:");
+    scanf("%f",&movierating);
+    send(socket_fd,&choice,sizeof(int),0);
+    send(socket_fd,mov_name,NAMESIZE,0);
+    send(socket_fd,&movierating,sizeof(float),0);
+}
+
 void menu(int socket_fd){
     // used to check if user wants to end the connection
     //return to main() function if exit_flag is 1 
@@ -52,8 +65,11 @@ void menu(int socket_fd){
         printf("%d. Exit\n",EXIT);
         printf("enter option: ");
         scanf("%d",&option);
+        getchar();
         if(option==ADD_RATING){
             //function to add rating
+            add_rating(option,socket_fd);
+            exit_flag=1;
         }
         else if(option==VIEW_RATING){
             //function to view movie rating
