@@ -10,6 +10,12 @@
 
 #define BUFFERSIZE 1024
 
+//========= GLOBAL VARIABLES ==============================
+
+extern struct MovieNode* head;
+extern struct MovieNode* tail;
+extern int ll_size;
+
 //========= MOVIE DEFINITION AND FUNCTIONS =================
 
 void printMovie(struct Movie m) {
@@ -20,6 +26,11 @@ void printMovie(struct Movie m) {
 
 int main()
 {
+
+    // reading the file to a linked list
+    read_file();
+    printf("%d\n", getNewId());
+
     int server_fd = socket(PF_INET, SOCK_STREAM, 0);
     if (server_fd <= 0) {
         printf("Error creating the socket\n");
@@ -43,9 +54,6 @@ int main()
         printf("Error in binding\n");
         return -1;
     }
-
-    //read_file();
-    read_file_till_num(2);
 
      // listening
     if (listen(server_fd, 2) < 0)

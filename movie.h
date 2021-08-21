@@ -11,7 +11,6 @@
 #define EXIT 4
 
 struct Movie {
-    int id;
     char name[NAMESIZE];
     float rating;
 };
@@ -23,15 +22,20 @@ struct MovieNode {
     struct MovieNode* next;
 };
 
-struct Movie search_using_name(char *str);
+void copyFromNodeToMovie(struct MovieNode* node, struct Movie* movie);
+struct Movie search_using_name(char* str);
 struct Movie search_using_id(int search_id);
-struct MovieNode* read_file_till_num(int n);
-void write_file(char* movieName, float rating); // rating is of float type
-struct MovieNode* read_file();
-int num_of_data();
+void add_new_movie_node(char* movieName, int rating);
+void write_file();
+void read_file();
 
 //linked list related funciton decalrations
 struct MovieNode* getNewNode();
 void copyFromMovieToNode(struct MovieNode* node, struct Movie* movie);
 int getNewId();
+
+// global linked list variable
+struct MovieNode* head;
+struct MovieNode* tail;
+int ll_size;
 #endif
