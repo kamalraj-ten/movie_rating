@@ -8,7 +8,8 @@
 #define ADD_RATING 1        
 #define MOD_RATING 2
 #define VIEW_RATING 3
-#define EXIT 4
+#define VIEW_ALL_RATING 4
+#define EXIT 5
 
 struct Movie {
     char name[NAMESIZE];
