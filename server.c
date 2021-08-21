@@ -80,7 +80,6 @@ int main()
             int readval = recv(client_fd, m.name, NAMESIZE, 0);
             readval = recv(client_fd, &m.rating, sizeof(float), 0);
             // update file
-            
         }
         else if( opt == 2){//view movie rating
             //recv(client_fd, &num, )
