@@ -34,4 +34,9 @@ int num_of_data();
 struct MovieNode* getNewNode();
 void copyFromMovieToNode(struct MovieNode* node, struct Movie* movie);
 int getNewId();
+
+// global linked list variable
+struct MovieNode* head;
+struct MovieNode* tail;
+int ll_size;
 #endif
