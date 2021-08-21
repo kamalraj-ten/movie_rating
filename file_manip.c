@@ -148,17 +148,12 @@ void write_file(char* movieName, int rating)
     //scanf ("%d", &input.rating);
     input.id = getNewId();
     if( input = search_using_name(input.name) != NULL){
-        input.rating = (inupt.rating+rating)/2;
+        input.rating = (inupt.rating + rating)/2;
     }
     else{
         input.rating = rating;
-        fwrite (&input, sizeof(struct Movie), 1, outfile);
-	if(fwrite != 0)
-		printf("contents to file written successfully !\n");
-	else
-		printf("error writing file !\n");
+        
     }
-    input.rating = rating;
     
 	fwrite (&input, sizeof(struct Movie), 1, outfile);
 	if(fwrite != 0)
