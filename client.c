@@ -6,9 +6,7 @@
         
 #include "movie.h"
 
-#define MAX 20              //max input size
-
-void menu(int,int);
+void menu();
 
 int main(){
     int socket_fd = socket(PF_INET, SOCK_STREAM, 0);
@@ -89,7 +87,7 @@ void view_all_rating(int choice,int socket_fd)
   send(socket_fd,&choice,sizeof(int),0);
   
   //receiving number of movies present in file
-  readval=recv(socket_fd,&num,sizeof(num),0);
+  int readval=recv(socket_fd,&num,sizeof(num),0);
   
   //Loop to receive movie details from user and display it
   while(i<num)
@@ -126,8 +124,7 @@ void menu(int socket_fd){
             //function to view particular movie rating
             view_rating(option,socket_fd);
         }
-        elseif(option==VIEW_ALL_RATING)
-        {
+        else if(option==VIEW_ALL_RATING){
             //function to view all movies rating
             view_all_rating(option,socket_fd);
         }

@@ -73,29 +73,17 @@ int main()
     printf("client connected\n");
     opt=0;
     while(1){
-        //getting option 
         recv(client_fd, &opt, sizeof(int), 0);
         if( opt == ADD_RATING){
             char name[20];
             float rating;
             int readval = recv(client_fd, name, NAMESIZE, 0);
             readval = recv(client_fd, &rating, sizeof(float), 0);
-            // update file
             add_new_movie_node( name, rating);
         }
-        else if( opt == 2){//view movie rating
-            //recv(client_fd, &num, )
+        else if( opt == 2){
+            //Todo
         }
-        //int readval = recv(client_fd, m.name, NAMESIZE, 0);
-        //readval = recv(client_fd, &m.rating, sizeof(int), 0);
-        //printMovie(m);
-    
-        //readval = recv(client_fd, a.name, NAMESIZE, 0);
-        //readval = recv(client_fd, &a.rating, sizeof(int), 0);
-        //printMovie(a);
-        //readval = recv(client_fd, a.name, NAMESIZE, 0);
-        //readval = recv(client_fd, &a.rating, sizeof(int), 0);
-        //printMovie(a);*/
     }
     return 0;
 }
