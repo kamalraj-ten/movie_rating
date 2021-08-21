@@ -9,11 +9,11 @@ extern struct MovieNode* head;
 extern struct MovieNode* tail;
 extern int ll_size;
 
-struct MovieNode* getNewNode() {
+struct MovieNode* getNewNode(char *str, float rating) {
     struct MovieNode* node = (struct MovieNode*) malloc(sizeof(struct MovieNode));
     node->next = NULL;
-    strcpy(node->name, "\0");
-    node->rating = 0;
+    strcpy(node->name, str);
+    node->rating = rating;
 
     return node;
 }
@@ -32,47 +32,55 @@ int getNewId() {
     return ll_size+1;
 }
 
-struct Movie search_using_name(char* str)
+struct MovieNode* search_using_name(char* str)
 {
     struct MovieNode* itr = head;
-    struct Movie movie = {"\0", -1.0};
     while( itr != NULL){
         if(strcmp(itr -> name,str) == 0){
-            copyFromNodeToMovie(itr, &movie);
-            return movie;
+            return itr;
         }
     }
-    return movie;
+    return itr;
 }
 
-struct Movie search_using_id(int search_id)
+struct MovieNode* search_using_id(int search_id)
 {
     struct MovieNode* curr = head;
-    struct Movie movie = {"\0", -1.0};
     while (curr != NULL) {
         if (curr->id == search_id) {
-            copyFromNodeToMovie(curr, &movie);
-            return movie;
+            return curr;
         }
+        curr = curr->next;
     }
-    return movie;
+    return curr;
 }
 
-void add_new_movie_node(char* movieName, int rating){
-    struct Movie input;
-    strcpy(input.name, movieName);
-    for(int i = 0; input.name[i]; i++){
-        input.name[i] = tolower(input.name[i]);
+void add_new_movie_node(char* movieName, float rating){
+    
+    for(int i = 0; movieName[i]; i++){
+        movieName[i] = tolower(movieName[i]);
     }
-    input = search_using_name(input.name);
+    
+
+    struct MovieNode* input = search_using_name(movieName);
     //input.id = getNewId();
-    if( input.rating != -1.0){
-        input.rating = (input.rating + rating)/2;
+    if( input->rating != -1.0){
+        input->rating = (input->rating + rating)/2;
     }
     else{
-        input.rating = rating;
+        struct MovieNode* newNode = getNewNode(movieName, rating);
+        
+        tail->next = newNode;
+        tail = newNode;
     }
 
+}
+void printll(){
+    struct MovieNode* cur  = head;
+    while(cur!=NULL){
+        printf("%s\t%f\n",cur->name,cur->rating);
+        cur = cur->next;
+    }
 }
 
 void write_file(){
@@ -108,7 +116,7 @@ void read_file() {
 
     struct Movie input;
     while(fread(&input, sizeof(struct Movie), 1, infile)){
-        struct MovieNode* newNode = getNewNode();
+        struct MovieNode* newNode = getNewNode("\0",-1);
         copyFromMovieToNode(newNode, &input);
         if (head == NULL) {
             head = newNode;
