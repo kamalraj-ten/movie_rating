@@ -29,8 +29,8 @@ int main()
 
     // reading the file to a linked list
     read_file();
-    printf("%d\n", getNewId());
-
+    
+    printll();
     int server_fd = socket(PF_INET, SOCK_STREAM, 0);
     if (server_fd <= 0) {
         printf("Error creating the socket\n");
@@ -76,10 +76,15 @@ int main()
         //getting option 
         recv(client_fd, &opt, sizeof(int), 0);
         if( opt == ADD_RATING){
-            struct Movie m;
-            int readval = recv(client_fd, m.name, NAMESIZE, 0);
-            readval = recv(client_fd, &m.rating, sizeof(float), 0);
+            char name[20];
+            float rating;
+            int readval = recv(client_fd, name, NAMESIZE, 0);
+            readval = recv(client_fd, &rating, sizeof(float), 0);
             // update file
+<<<<<<< HEAD
+=======
+            add_new_movie_node( name, rating);
+>>>>>>> fd1ffc3910f2a14a43d33b3a1d67aa74d1628170
         }
         else if( opt == 2){//view movie rating
             //recv(client_fd, &num, )
