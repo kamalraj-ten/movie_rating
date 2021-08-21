@@ -69,7 +69,7 @@ void add_new_movie_node(char* movieName, float rating){
     }
     else{
         struct MovieNode* newNode = getNewNode(movieName, rating);
-        
+        newNode->id = getNewId();
         tail->next = newNode;
         tail = newNode;
     }
