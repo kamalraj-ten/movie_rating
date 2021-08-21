@@ -8,7 +8,7 @@
 
 #define MAX 20              //max input size
 
-void menu();
+void menu(int,int);
 
 int main(){
     int socket_fd = socket(PF_INET, SOCK_STREAM, 0);
@@ -39,18 +39,68 @@ int main(){
     return 0;
 }
 
+//Function to add movie rating
 void add_rating(int choice,int socket_fd){
     int mov_id;
     char mov_name[NAMESIZE];
     float movierating;
+
+    //Getting the movie name and rating from user
     printf("Enter the movie name:");
     scanf("%[^\n]%*c",mov_name);
     printf("Enter the movie rating:");
     scanf("%f",&movierating);
+
+    //sending the user choice,movie name and rating to server
     send(socket_fd,&choice,sizeof(int),0);
     send(socket_fd,mov_name,NAMESIZE,0);
     send(socket_fd,&movierating,sizeof(float),0);
 }
+
+//Function to view rating of particular movie
+void view_rating(int choice,int socket_fd)
+{
+   char mov_name[NAMESIZE];
+   float movierating;
+   int readval;
+   
+   //sending the user choice to server
+   send(socket_fd,&choice,sizeof(int),0);
+
+   //Getting movie name from user
+   printf("Enter the movie name:");
+   scanf("%[^\n]%*c",mov_name);
+
+   //sending the movie name to user and receiving rating
+   send(socket_fd,mov_name,NAMESIZE,0);
+   readval=recv(socket_fd,&movierating,sizeof(movierating),0);
+   printf("Movie Rating is: %.2f",movierating);
+   
+}
+
+//Function to view rating of all movies
+void view_all_rating(int choice,int socket_fd)
+{
+  int num,i=0;
+  float movierating;
+  char mov_name[20];
+  
+  //sending the user choice to server
+  send(socket_fd,&choice,sizeof(int),0);
+  
+  //receiving number of movies present in file
+  readval=recv(socket_fd,&num,sizeof(num),0);
+  
+  //Loop to receive movie details from user and display it
+  while(i<num)
+    {
+        readval=recv(socket_fd,mov_name,sizeof(mov_name),0);
+        readval=recv(socket_fd,&movierating,sizeof(movierating),0);
+        printf("Movie Name: %s\n Movie Rating: %.2f\n\n",mov_name,movierating);
+        i++;
+    }
+}
+
 
 void menu(int socket_fd){
     // used to check if user wants to end the connection
@@ -61,7 +111,8 @@ void menu(int socket_fd){
     //loop unitl user wants to exit
     while (exit_flag==0){
         printf("%d. Add new movie rating\n",ADD_RATING);
-        printf("%d. View movie rating\n",VIEW_RATING);
+        printf("%d. View given movie rating\n",VIEW_RATING);
+        printf("%d. View all movie rating\n",VIEW_ALL_RATING);
         printf("%d. Exit\n",EXIT);
         printf("enter option: ");
         scanf("%d",&option);
@@ -72,8 +123,15 @@ void menu(int socket_fd){
             //exit_flag=1;
         }
         else if(option==VIEW_RATING){
-            //function to view movie rating
-        }else if(option==EXIT){
+            //function to view particular movie rating
+            view_rating(option,socket_fd);
+        }
+        elseif(option==VIEW_ALL_RATING)
+        {
+            //function to view all movies rating
+            view_all_rating(option,socket_fd);
+        }
+        else if(option==EXIT){
             exit_flag=1;
         }else{
             printf("Incorrect option\n\n");

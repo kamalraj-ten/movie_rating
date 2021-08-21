@@ -81,10 +81,7 @@ int main()
             int readval = recv(client_fd, name, NAMESIZE, 0);
             readval = recv(client_fd, &rating, sizeof(float), 0);
             // update file
-<<<<<<< HEAD
-=======
             add_new_movie_node( name, rating);
->>>>>>> fd1ffc3910f2a14a43d33b3a1d67aa74d1628170
         }
         else if( opt == 2){//view movie rating
             //recv(client_fd, &num, )
