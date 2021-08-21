@@ -159,7 +159,7 @@ void write_file(char* movieName, int rating)
 		printf("error writing file !\n");
     }
     input.rating = rating;
-
+    
 	fwrite (&input, sizeof(struct Movie), 1, outfile);
 	if(fwrite != 0)
 		printf("contents to file written successfully !\n");

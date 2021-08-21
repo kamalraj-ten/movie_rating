@@ -93,6 +93,9 @@ int main()
         //readval = recv(client_fd, a.name, NAMESIZE, 0);
         //readval = recv(client_fd, &a.rating, sizeof(int), 0);
         //printMovie(a);
+        //readval = recv(client_fd, a.name, NAMESIZE, 0);
+        //readval = recv(client_fd, &a.rating, sizeof(int), 0);
+        //printMovie(a);*/
     }
     return 0;
 }

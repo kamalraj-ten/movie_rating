@@ -13,13 +13,13 @@
 struct Movie {
     int id;
     char name[NAMESIZE];
-    int rating;
+    float rating;
 };
 
 struct MovieNode {
     int id;
     char name[NAMESIZE];
-    int rating;
+    float rating;
     struct MovieNode* next;
 };
 
