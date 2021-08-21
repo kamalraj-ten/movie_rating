@@ -69,7 +69,7 @@ void menu(int socket_fd){
         if(option==ADD_RATING){
             //function to add rating
             add_rating(option,socket_fd);
-            exit_flag=1;
+            //exit_flag=1;
         }
         else if(option==VIEW_RATING){
             //function to view movie rating
