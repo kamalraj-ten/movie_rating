@@ -9,11 +9,11 @@ extern struct MovieNode* head;
 extern struct MovieNode* tail;
 extern int ll_size;
 
-struct MovieNode* getNewNode() {
+struct MovieNode* getNewNode(char *str, float rating) {
     struct MovieNode* node = (struct MovieNode*) malloc(sizeof(struct MovieNode));
     node->next = NULL;
-    strcpy(node->name, "\0");
-    node->rating = 0;
+    strcpy(node->name, str);
+    node->rating = rating;
 
     return node;
 }
@@ -58,19 +58,23 @@ struct Movie search_using_id(int search_id)
     return movie;
 }
 
-void add_new_movie_node(char* movieName, int rating){
-    struct Movie input;
-    strcpy(input.name, movieName);
-    for(int i = 0; input.name[i]; i++){
-        input.name[i] = tolower(input.name[i]);
+void add_new_movie_node(char* movieName, float rating){
+    
+    for(int i = 0; movieName[i]; i++){
+        movieName[i] = tolower(movieName[i]);
     }
-    input = search_using_name(input.name);
+    
+
+    struct movieNode* input = search_using_name(input.name);
     //input.id = getNewId();
     if( input.rating != -1.0){
         input.rating = (input.rating + rating)/2;
     }
     else{
-        input.rating = rating;
+        struct movieNode* newNode = getNewNode(movieName, rating);
+        
+        tail->next = newNode;
+        tail = newNode;
     }
 
 }
