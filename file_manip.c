@@ -34,11 +34,17 @@ int getNewId() {
 
 struct MovieNode* search_using_name(char* str)
 {
+    //changing the name to lowercase - for uniformity
+    for(int i = 0; str[i]; i++){
+        str[i] = tolower(str[i]);
+    }
+    printf("serching movie %s...\n", str);
     struct MovieNode* itr = head;
     while( itr != NULL){
         if(strcmp(itr -> name,str) == 0){
             return itr;
         }
+        itr = itr->next;
     }
     return itr;
 }
@@ -60,11 +66,10 @@ void add_new_movie_node(char* movieName, float rating){
     for(int i = 0; movieName[i]; i++){
         movieName[i] = tolower(movieName[i]);
     }
-    
 
     struct MovieNode* input = search_using_name(movieName);
     //input.id = getNewId();
-    if( input->rating != -1.0){
+    if( input!=NULL ){
         input->rating = (input->rating + rating)/2;
     }
     else{
@@ -72,13 +77,16 @@ void add_new_movie_node(char* movieName, float rating){
         newNode->id = getNewId();
         tail->next = newNode;
         tail = newNode;
+        ++ll_size;
     }
 
 }
 void printll(){
     struct MovieNode* cur  = head;
+    printf("%-20s\t%s\n", "MOVIE", "RATING");
+    printf("-------------------------------------\n");
     while(cur!=NULL){
-        printf("%s\t%f\n",cur->name,cur->rating);
+        printf("%-20s\t%f\n",cur->name,cur->rating);
         cur = cur->next;
     }
 }

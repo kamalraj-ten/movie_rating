@@ -74,16 +74,43 @@ int main()
     opt=0;
     while(1){
         recv(client_fd, &opt, sizeof(int), 0);
+        printf("option: %d\n",opt);
         if( opt == ADD_RATING){
-            char name[20];
+            char name[NAMESIZE];
             float rating;
             int readval = recv(client_fd, name, NAMESIZE, 0);
             readval = recv(client_fd, &rating, sizeof(float), 0);
             add_new_movie_node( name, rating);
-        }
-        else if( opt == 2){
-            //Todo
+            strcpy(name,"movie rating added successfully!");
+            send(client_fd,name,NAMESIZE,0);
+            write_file();
+        }else if( opt == VIEW_RATING){
+            char name[NAMESIZE];
+            recv(client_fd,name,NAMESIZE,0);
+            struct MovieNode* res = search_using_name(name);
+            if(res==NULL){
+                float error=-1;
+                send(client_fd,&error,sizeof(float),0);
+            }else{
+                float rating = res->rating;
+                send(client_fd,&rating, sizeof(float),0);
+            }
+        }else if( opt == VIEW_ALL_RATING){
+            send(client_fd,&ll_size,sizeof(int),0);
+            struct MovieNode* cur = head;
+            char name[NAMESIZE];
+            float rating;
+            while (cur!=NULL){
+                strcpy(name,cur->name);
+                rating = cur->rating;
+                send(client_fd,name,NAMESIZE,0);
+                send(client_fd,&rating,sizeof(rating),0);
+                cur = cur->next;
+            }
+        }else if( opt == EXIT ){
+            break;
         }
     }
+    write_file();
     return 0;
 }

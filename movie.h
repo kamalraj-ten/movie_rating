@@ -2,7 +2,7 @@
 #define MOVIE_H
 
 #define PORT 8888   
-#define NAMESIZE 20
+#define NAMESIZE 40
 
 //options user can choose
 #define ADD_RATING 1        
