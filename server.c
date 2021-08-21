@@ -30,6 +30,7 @@ int main()
     // reading the file to a linked list
     read_file();
     
+    printll();
     int server_fd = socket(PF_INET, SOCK_STREAM, 0);
     if (server_fd <= 0) {
         printf("Error creating the socket\n");
@@ -96,5 +97,5 @@ int main()
         //readval = recv(client_fd, &a.rating, sizeof(int), 0);
         //printMovie(a);*/
     }
-    return 0;`
+    return 0;
 }

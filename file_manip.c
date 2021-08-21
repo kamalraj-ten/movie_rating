@@ -32,30 +32,27 @@ int getNewId() {
     return ll_size+1;
 }
 
-struct Movie search_using_name(char* str)
+struct MovieNode* search_using_name(char* str)
 {
     struct MovieNode* itr = head;
-    struct Movie movie = {"\0", -1.0};
     while( itr != NULL){
         if(strcmp(itr -> name,str) == 0){
-            copyFromNodeToMovie(itr, &movie);
-            return movie;
+            return itr;
         }
     }
-    return movie;
+    return itr;
 }
 
-struct Movie search_using_id(int search_id)
+struct MovieNode* search_using_id(int search_id)
 {
     struct MovieNode* curr = head;
-    struct Movie movie = {"\0", -1.0};
     while (curr != NULL) {
         if (curr->id == search_id) {
-            copyFromNodeToMovie(curr, &movie);
-            return movie;
+            return curr;
         }
+        curr = curr->next;
     }
-    return movie;
+    return curr;
 }
 
 void add_new_movie_node(char* movieName, float rating){
@@ -65,18 +62,25 @@ void add_new_movie_node(char* movieName, float rating){
     }
     
 
-    struct movieNode* input = search_using_name(input.name);
+    struct MovieNode* input = search_using_name(movieName);
     //input.id = getNewId();
-    if( input.rating != -1.0){
-        input.rating = (input.rating + rating)/2;
+    if( input->rating != -1.0){
+        input->rating = (input->rating + rating)/2;
     }
     else{
-        struct movieNode* newNode = getNewNode(movieName, rating);
+        struct MovieNode* newNode = getNewNode(movieName, rating);
         
         tail->next = newNode;
         tail = newNode;
     }
 
+}
+void printll(){
+    struct MovieNode* cur  = head;
+    while(cur!=NULL){
+        printf("%s\t%f\n",cur->name,cur->rating);
+        cur = cur->next;
+    }
 }
 
 void write_file(){
@@ -112,7 +116,7 @@ void read_file() {
 
     struct Movie input;
     while(fread(&input, sizeof(struct Movie), 1, infile)){
-        struct MovieNode* newNode = getNewNode();
+        struct MovieNode* newNode = getNewNode("\0",-1);
         copyFromMovieToNode(newNode, &input);
         if (head == NULL) {
             head = newNode;
