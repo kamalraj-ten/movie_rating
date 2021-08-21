@@ -38,25 +38,18 @@ int main(){
     close(socket_fd);
     return 0;
 }
-void add_rating(int choice,int socket_fd)
-{
-    int *op=&choice;
-    char *name;
+
+void add_rating(int choice,int socket_fd){
     int mov_id;
-    char mov_name[20];
-    float *rating,movierating;
-    printf("Enter the movie id:");
-    scanf("%d",&mov_id);
+    char mov_name[NAMESIZE];
+    float movierating;
     printf("Enter the movie name:");
-    scanf("%s",mov_name);
+    scanf("%[^\n]%*c",mov_name);
     printf("Enter the movie rating:");
     scanf("%f",&movierating);
-    rating=movierating;
-    name=mov_name;
-    rating=&movierating;
-    send(socket_fd,op,sizeof(op),0);
-    send(socket_fd,name,strlen(name),0);
-    send(socket_fd,rating,sizeof(rating),0);
+    send(socket_fd,&choice,sizeof(int),0);
+    send(socket_fd,mov_name,NAMESIZE,0);
+    send(socket_fd,&movierating,sizeof(float),0);
 }
 
 void menu(int socket_fd){
@@ -72,9 +65,11 @@ void menu(int socket_fd){
         printf("%d. Exit\n",EXIT);
         printf("enter option: ");
         scanf("%d",&option);
+        getchar();
         if(option==ADD_RATING){
             //function to add rating
             add_rating(option,socket_fd);
+            exit_flag=1;
         }
         else if(option==VIEW_RATING){
             //function to view movie rating

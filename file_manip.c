@@ -24,7 +24,7 @@ void copyFromMovieToNode(struct MovieNode* node, struct Movie* movie) {
 }
 
 int getNewId() {
-    return num_of_data+1;
+    return num_of_data()+1;
 }
 //==================================
 
