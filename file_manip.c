@@ -39,6 +39,7 @@ struct MovieNode* search_using_name(char* str)
         if(strcmp(itr -> name,str) == 0){
             return itr;
         }
+        itr = itr->next;
     }
     return itr;
 }
@@ -60,16 +61,14 @@ void add_new_movie_node(char* movieName, float rating){
     for(int i = 0; movieName[i]; i++){
         movieName[i] = tolower(movieName[i]);
     }
-    
 
     struct MovieNode* input = search_using_name(movieName);
     //input.id = getNewId();
-    if( input->rating != -1.0){
+    if( input!=NULL ){
         input->rating = (input->rating + rating)/2;
     }
     else{
         struct MovieNode* newNode = getNewNode(movieName, rating);
-        
         tail->next = newNode;
         tail = newNode;
     }

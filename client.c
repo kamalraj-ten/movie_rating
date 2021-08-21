@@ -53,6 +53,8 @@ void add_rating(int choice,int socket_fd){
     send(socket_fd,&choice,sizeof(int),0);
     send(socket_fd,mov_name,NAMESIZE,0);
     send(socket_fd,&movierating,sizeof(float),0);
+    recv(socket_fd,mov_name,NAMESIZE,0);
+    printf("%s\n\n",mov_name);
 }
 
 //Function to view rating of particular movie
@@ -72,8 +74,11 @@ void view_rating(int choice,int socket_fd)
    //sending the movie name to user and receiving rating
    send(socket_fd,mov_name,NAMESIZE,0);
    readval=recv(socket_fd,&movierating,sizeof(movierating),0);
-   printf("Movie Rating is: %.2f",movierating);
-   
+   if(movierating==-1){
+       printf("Movie Not Found!!\n\n");
+   }else{
+       printf("Movie Rating is: %.2f\n\n",movierating);
+   }
 }
 
 //Function to view rating of all movies
@@ -81,7 +86,7 @@ void view_all_rating(int choice,int socket_fd)
 {
   int num,i=0;
   float movierating;
-  char mov_name[20];
+  char mov_name[NAMESIZE];
   
   //sending the user choice to server
   send(socket_fd,&choice,sizeof(int),0);
@@ -90,13 +95,13 @@ void view_all_rating(int choice,int socket_fd)
   int readval=recv(socket_fd,&num,sizeof(num),0);
   
   //Loop to receive movie details from user and display it
-  while(i<num)
-    {
+  while(i<num){
         readval=recv(socket_fd,mov_name,sizeof(mov_name),0);
         readval=recv(socket_fd,&movierating,sizeof(movierating),0);
-        printf("Movie Name: %s\n Movie Rating: %.2f\n\n",mov_name,movierating);
+        printf("Record: %d\nMovie Name: %s\nMovie Rating: %.2f\n\n",i+1,mov_name,movierating);
         i++;
-    }
+   }
+   printf("\n\n");
 }
 
 
@@ -118,7 +123,6 @@ void menu(int socket_fd){
         if(option==ADD_RATING){
             //function to add rating
             add_rating(option,socket_fd);
-            //exit_flag=1;
         }
         else if(option==VIEW_RATING){
             //function to view particular movie rating
@@ -129,6 +133,7 @@ void menu(int socket_fd){
             view_all_rating(option,socket_fd);
         }
         else if(option==EXIT){
+            send(socket_fd,&option,sizeof(option),0);
             exit_flag=1;
         }else{
             printf("Incorrect option\n\n");
