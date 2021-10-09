@@ -16,6 +16,7 @@
 extern struct MovieNode* head;
 extern struct MovieNode* tail;
 extern int ll_size;
+pthread_mutex_t lock;
 
 //========= MOVIE DEFINITION AND FUNCTIONS =================
 
@@ -34,12 +35,16 @@ void* send_recv_req(void* args){
         if( opt == ADD_RATING){
             recv(client_fd, name, NAMESIZE, 0);
             recv(client_fd, &rating, sizeof(float), 0);
+            pthread_mutex_lock(&lock); // locking critical section
             add_new_movie_node( name, rating);
+            pthread_mutex_unlock(&lock); // unlocking the mutex lock
             strcpy(name,"movie rating added successfully!");
             send(client_fd,name,NAMESIZE,0);
         }else if( opt == VIEW_RATING){
             recv(client_fd,name,NAMESIZE,0);
+            pthread_mutex_lock(&lock);
             struct MovieNode* res = search_using_name(name);
+            pthread_mutex_unlock(&lock);
             if(res==NULL){
                 float error=-1;
                 send(client_fd,&error,sizeof(float),0);
@@ -48,6 +53,7 @@ void* send_recv_req(void* args){
                 send(client_fd,&rating, sizeof(float),0);
             }
         }else if( opt == VIEW_ALL_RATING){
+            pthread_mutex_lock(&lock);
             send(client_fd,&ll_size,sizeof(int),0);
             struct MovieNode* cur = head;
             while (cur!=NULL){
@@ -57,6 +63,7 @@ void* send_recv_req(void* args){
                 send(client_fd,&rating,sizeof(rating),0);
                 cur = cur->next;
             }
+            pthread_mutex_unlock(&lock);
         }
     }
 }
@@ -64,9 +71,9 @@ void* send_recv_req(void* args){
 int main(){
 
     // reading the file to a linked list
-    read_file();
-    
+    read_file();    
     printll();
+
     int server_fd = socket(PF_INET, SOCK_STREAM, 0);
     if (server_fd <= 0) {
         printf("Error creating the socket\n");
@@ -91,11 +98,17 @@ int main(){
         return -1;
     }
 
+    //creating mutex lock
+    if ((pthread_mutex_init(&lock, NULL)) < 0) {
+        printf("Error creating mutex locks\n");
+        return -1;
+    }
+    if (listen(server_fd, 2) < 0){
+        printf("Error Listening\n");
+        return -1;
+    }
+
     while(1){
-        if (listen(server_fd, 2) < 0){
-            printf("Error Listening\n");
-            return -1;
-        }
         struct sockaddr_in client_addr;
         int client_fd, addr_len = sizeof(client_addr);
         if ((client_fd = accept(server_fd, (struct sockaddr *)&client_addr, (socklen_t *)&addr_len)) < 0){
@@ -105,6 +118,7 @@ int main(){
         pthread_t tid;
         pthread_create(&tid,NULL,send_recv_req,&client_fd);
     }
+    pthread_mutex_destroy(&lock);
     write_file();
     return 0;
 }
