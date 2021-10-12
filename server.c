@@ -89,7 +89,7 @@ int main()
         }
         else if(opt1 == EXIT){
             break;
-      
+        }
     while(1){
         recv(client_fd, &opt, sizeof(int), 0);
         printf("option: %d\n",opt);
