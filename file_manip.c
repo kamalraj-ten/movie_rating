@@ -9,23 +9,52 @@ extern struct MovieNode* head;
 extern struct MovieNode* tail;
 extern int ll_size;
 
-struct MovieNode* getNewNode(char *str, float rating) {
+struct MovieNode* getNewNode(char *str, float rating, char user[][40]) {
     struct MovieNode* node = (struct MovieNode*) malloc(sizeof(struct MovieNode));
     node->next = NULL;
     strcpy(node->name, str);
     node->rating = rating;
-
+    int i=0;
+    while(true)
+    {
+        strcpy(node->users[i],user[i]);
+        if(strcmp(user[i],";")==0)
+        {
+            break;
+        }        
+        i++;
+    }
     return node;
 }
 
 void copyFromMovieToNode(struct MovieNode* node, struct Movie* movie) {
     node->rating = movie->rating;
     strcpy(node->name, movie->name);
+    int i=0;
+    while(true)
+    {
+        strcpy(node->users[i],movie->users[i]);
+        if(strcmp(movie->users[i],";")==0)
+        {
+            break;
+        }        
+        i++;
+    }
 }
 
 void copyFromNodeToMovie(struct MovieNode* node, struct Movie* movie) {
     movie->rating = node->rating;
     strcpy(movie->name, node->name);
+    int i=0;
+    while(true)
+    {
+        strcpy(movie->users[i],node->users[i]);
+        if(strcmp(node->users[i],";")==0)
+        {
+            break;
+        }
+        i++;
+    }
 }
 
 int getNewId() {
@@ -34,7 +63,7 @@ int getNewId() {
 
 struct MovieNode* search_using_name(char* str)
 {
-    //changing the name to lowercase - for uniformity
+    //changing the name to lowercase - for uniformity           
     for(int i = 0; str[i]; i++){
         str[i] = tolower(str[i]);
     }
@@ -45,8 +74,8 @@ struct MovieNode* search_using_name(char* str)
             return itr;
         }
         itr = itr->next;
-    }
-    return itr;
+    }                   
+    return itr;                                                    
 }
 
 struct MovieNode* search_using_id(int search_id)
@@ -61,6 +90,7 @@ struct MovieNode* search_using_id(int search_id)
     return curr;
 }
 
+                                                                    //NEED TO CHANGE AFTER CREATING THE USERS FILE
 void add_new_movie_node(char* movieName, float rating){
     
     for(int i = 0; movieName[i]; i++){
@@ -93,7 +123,7 @@ void printll(){
 
 void write_file(){
     FILE *outfile;
-	outfile = fopen ("Movie.dat", "w");
+	outfile = fopen ("Movie.txt", "w");
 	if (outfile == NULL){
 		fprintf(stderr, "\nError opening file\n");
 		exit (1);
@@ -103,6 +133,16 @@ void write_file(){
     while(cur!=NULL){
         strcpy(input.name,cur->name);
         input.rating = cur->rating;
+        int i=0;
+        while(true)
+        {
+            strcpy(input.users[i],cur->users[i]);
+            if(strcmp(cur->users[i],";")==0)
+            {
+                break;
+            }
+            i++;
+        }
         fwrite(&input,sizeof(struct Movie),1,outfile);
         cur=cur->next;
     }
@@ -116,7 +156,7 @@ void read_file() {
     head = NULL;
     tail = head;
 
-    infile = fopen ("Movie.dat", "r");
+    infile = fopen ("Movie.txt", "r");
     if (infile == NULL){
         fprintf(stderr, "\nError opening file\n");
         exit (1);
@@ -124,7 +164,8 @@ void read_file() {
 
     struct Movie input;
     while(fread(&input, sizeof(struct Movie), 1, infile)){
-        struct MovieNode* newNode = getNewNode("\0",-1);
+        char user[][40]={";"};
+        struct MovieNode* newNode = getNewNode("\0",-1,user);
         copyFromMovieToNode(newNode, &input);
         if (head == NULL) {
             head = newNode;

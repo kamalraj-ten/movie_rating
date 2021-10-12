@@ -71,7 +71,7 @@ int main()
     }
 
     printf("client connected\n");
-    opt=0;
+    opt=0;   
     while(1){
         recv(client_fd, &opt, sizeof(int), 0);
         printf("option: %d\n",opt);
