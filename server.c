@@ -70,8 +70,26 @@ int main()
         return -1;
     }
 
-    printf("client connected\n");
-    opt=0;   
+    printf("client connected\n")
+    opt=0;
+    int opt1 = 0;
+    char user_name[40], passwd[10];
+    while(1){
+        recv(client_fd, &opt1, sizeof(int), 0);
+        printf("option: %d\n",opt);
+        if(opt1 == 1){
+            //Sign Up
+            recv(client_fd, user_name, 40, 0);
+            recv(client_fd, passwd, 10, 0);
+        }
+        else if(opt1 == 2){
+            //Log In
+            recv(client_fd, user_name, 40, 0);
+            recv(client_fd, passwd, 10, 0);
+        }
+        else if(opt1 == EXIT){
+            break;
+      
     while(1){
         recv(client_fd, &opt, sizeof(int), 0);
         printf("option: %d\n",opt);
@@ -112,5 +130,6 @@ int main()
         }
     }
     write_file();
+    }
     return 0;
 }

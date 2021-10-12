@@ -104,39 +104,105 @@ void view_all_rating(int choice,int socket_fd)
    printf("\n\n");
 }
 
+//Function to check user credentials
+int check_credentials(int choice, int socket_fd, char* user_name, char* passwd){
+    int num;
+
+    //sending the user choice to server
+    send(socket_fd,&choice,sizeof(int),0);
+
+    //sending user_name & Password
+    send(sock_fd, &user_name, 40, 0);
+    send(sock_fd, &passwd, 10, 0);
+    //receiving status of account
+    int readval=recv(socket_fd,&num,sizeof(num),0);
+
+    return num;
+}
+
 
 void menu(int socket_fd){
     // used to check if user wants to end the connection
     //return to main() function if exit_flag is 1 
     int exit_flag=0;
 
-    int option;
+    int option, option1;
     //loop unitl user wants to exit
     while (exit_flag==0){
-        printf("%d. Add new movie rating\n",ADD_RATING);
-        printf("%d. View given movie rating\n",VIEW_RATING);
-        printf("%d. View all movie rating\n",VIEW_ALL_RATING);
+        home:
+        printf("1. Sign Up\n");
+        printf("2. Log In\n");
         printf("%d. Exit\n",EXIT);
-        printf("enter option: ");
-        scanf("%d",&option);
+        printf("Enter option: ");
+        scanf("%d",option1);
         getchar();
-        if(option==ADD_RATING){
-            //function to add rating
-            add_rating(option,socket_fd);
+        char user_name[40], passwd[10];
+        if(option1 == 1){
+            printf("Enter User Name: ");
+            scanf("%s",user_name);
+            printf("\nEnter Password: ");
+            scanf("%s",passwd);
+            //function to send user credentials
+            if(check_credentials(option1, socket_fd, user_name, passwd)){
+                printf("\nSign Up Successfull ...\n");
+                goto home;
+            }
+            else{
+                printf("\nSign Up Failed\n");
+                goto home;
+            }
         }
-        else if(option==VIEW_RATING){
-            //function to view particular movie rating
-            view_rating(option,socket_fd);
+        else if(option1 == 2){
+            
+            printf("Enter User Name: ");
+            scanf("%s",user_name);
+            printf("\nEnter Password: ");
+            scanf("%s",passwd);
+            //function to send user credentials
+            if(check_credentials(option1, socket_fd, user_name, passwd)){
+                printf("\nLog In Succesfull ...\n");
+                goto login;
+            }
+            else{
+                printf("\ninvalid username password\n");
+                goto home;
+            }
         }
-        else if(option==VIEW_ALL_RATING){
-            //function to view all movies rating
-            view_all_rating(option,socket_fd);
-        }
-        else if(option==EXIT){
+        else if(option1 == EXIT){
             send(socket_fd,&option,sizeof(option),0);
             exit_flag=1;
-        }else{
-            printf("Incorrect option\n\n");
+            goto home;
         }
+        else{
+            printf("Incorrect option\n\n");
+            goto home;
+        }
+        login:
+            printf("%d. Add new movie rating\n",ADD_RATING);
+            printf("%d. View given movie rating\n",VIEW_RATING);
+            printf("%d. View all movie rating\n",VIEW_ALL_RATING);
+            printf("%d. Exit\n",EXIT);
+            printf("enter option: ");
+            scanf("%d",&option);
+            getchar();
+            if(option==ADD_RATING){
+                //function to add rating
+                add_rating(option,socket_fd);
+            }
+            else if(option==VIEW_RATING){
+                //function to view particular movie rating
+                view_rating(option,socket_fd);
+            }
+            else if(option==VIEW_ALL_RATING){
+                //function to view all movies rating
+                view_all_rating(option,socket_fd);
+            }
+            else if(option==EXIT){
+                send(socket_fd,&option,sizeof(option),0);
+                exit_flag=1;
+            }else{
+                printf("Incorrect option\n\n");
+            }
+        
     }
 }
