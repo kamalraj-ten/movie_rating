@@ -7,6 +7,7 @@
 
 #include "movie.h"
 #include "file_manip.c"
+#include "userfile_manip.c"
 
 #define BUFFERSIZE 1024
 
