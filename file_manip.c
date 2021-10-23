@@ -4,6 +4,7 @@
 #include <ctype.h>
 
 #include "movie.h"
+#include "userfile_manip.c"
 
 extern struct MovieNode* head;
 extern struct MovieNode* tail;
@@ -15,7 +16,7 @@ struct MovieNode* getNewNode(char *str, float rating, char user[][40]) {
     strcpy(node->name, str);
     node->rating = rating;
     int i=0;
-    while(true)
+    while(1)
     {
         strcpy(node->users[i],user[i]);
         if(strcmp(user[i],";")==0)
@@ -31,7 +32,7 @@ void copyFromMovieToNode(struct MovieNode* node, struct Movie* movie) {
     node->rating = movie->rating;
     strcpy(node->name, movie->name);
     int i=0;
-    while(true)
+    while(1)
     {
         strcpy(node->users[i],movie->users[i]);
         if(strcmp(movie->users[i],";")==0)
@@ -46,7 +47,7 @@ void copyFromNodeToMovie(struct MovieNode* node, struct Movie* movie) {
     movie->rating = node->rating;
     strcpy(movie->name, node->name);
     int i=0;
-    while(true)
+    while(1)
     {
         strcpy(movie->users[i],node->users[i]);
         if(strcmp(node->users[i],";")==0)
@@ -90,20 +91,59 @@ struct MovieNode* search_using_id(int search_id)
     return curr;
 }
 
-                                                                    //NEED TO CHANGE AFTER CREATING THE USERS FILE
-void add_new_movie_node(char* movieName, float rating){
+                                                                    
+void add_new_movie_node(char* movieName, float rating,char* uName){
     
     for(int i = 0; movieName[i]; i++){
         movieName[i] = tolower(movieName[i]);
     }
+    for(int i = 0; uName[i]; i++){
+        uName[i] = tolower(uName[i]);
+    }
 
     struct MovieNode* input = search_using_name(movieName);
     //input.id = getNewId();
-    if( input!=NULL ){
-        input->rating = (input->rating + rating)/2;
+    if( input!=NULL ){              //if movie is present
+        int i=0,f=0,l;
+        while(1)
+        {
+            if(strcmp(input->users[i],uName)==0)                //if user has rated the movie before
+            {
+                f=1;
+                l=i;
+            }
+            if(strcmp(input->users[i],";")==0)
+            {
+                break;
+            }
+            i++;
+        }
+        //adding movie to the user's rated list  and function returns the previous rating if user rated already
+        int prerating=add_new_movie(uName,movieName,rating);               
+        
+        if(f==1)          // changing the user's previous rating to new rating
+        {
+           int sum=(input->rating)*(i+1);
+           if(prerating!=-1)
+           {
+              sum=sum-prerating+rating;                         
+           }
+           input->rating=sum/(i+1);
+        }
+        else if(f==0)          // adding the user to movie's user list
+        {
+            strcpy(input->users[i],uName);
+            strcpy(input->users[i+1],";");
+            input->rating = (input->rating + rating)/2;
+        }
+
     }
-    else{
-        struct MovieNode* newNode = getNewNode(movieName, rating);
+    else{          //if movie is not present
+        int prerating=add_new_movie(uName,movieName,rating);
+        char user[10][40];
+        strcpy(user[0],uName);
+        strcpy(user[1],";");
+        struct MovieNode* newNode = getNewNode(movieName,rating,user);
         newNode->id = getNewId();
         tail->next = newNode;
         tail = newNode;
@@ -134,7 +174,7 @@ void write_file(){
         strcpy(input.name,cur->name);
         input.rating = cur->rating;
         int i=0;
-        while(true)
+        while(1)
         {
             strcpy(input.users[i],cur->users[i]);
             if(strcmp(cur->users[i],";")==0)
