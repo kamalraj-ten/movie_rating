@@ -57,14 +57,20 @@ struct UserNode* search_using_username(char* str)
     for(int i = 0; str[i]; i++){
         str[i] = tolower(str[i]);
     }
-    printf("serching user %s...\n", str);
+    printf("searching user %s...\n", str);
     struct UserNode* itr = head1;
+    if(itr==NULL)
+    {
+    printf("hello\n");
+    }
     while( itr != NULL){
-        if(strcmp(itr -> username,str) == 0){
+        printf("hello2\n");
+        if(strcmp(itr->username,str) == 0){
             return itr;
         }
         itr = itr->next;
     }                   
+    printf("hello3");
     return itr;                                                    
 }
 
@@ -111,8 +117,8 @@ int add_new_user_node(char* uname,char* psd)
     for(int i = 0; uname[i]; i++){
         uname[i] = tolower(uname[i]);
     }
-
     struct UserNode* input = search_using_username(uname);
+    printf("%s",uname);
     if( input!=NULL ){
         printf("Username already exists");
         return 0;
@@ -128,7 +134,7 @@ int add_new_user_node(char* uname,char* psd)
 
 void write_userfile(){
     FILE *outfile;
-	outfile = fopen ("User.dat", "w");
+	outfile = fopen ("User.dat", "wb");
 	if (outfile == NULL){
 		fprintf(stderr, "\nError opening file\n");
 		exit (1);
@@ -156,12 +162,10 @@ void write_userfile(){
 }
 
 void read_userfile(){
-    l_size = 0;
     FILE *infile;
     head1 = NULL;
     tail1 = head1;
-
-    infile = fopen ("User.txt", "r");
+    infile = fopen ("User.dat", "rb");
     if (infile == NULL){
         fprintf(stderr, "\nError opening file read_userfile\n");
         exit (1);
