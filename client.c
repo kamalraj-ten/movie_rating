@@ -109,13 +109,14 @@ int check_credentials(int choice, int socket_fd, char* user_name, char* passwd){
     int num;
 
     //sending the user choice to server
-    send(socket_fd,&choice,sizeof(int),0);
+    send(socket_fd,&choice,sizeof(choice),0);
 
     //sending user_name & Password
     send(socket_fd, user_name, 40, 0);
     send(socket_fd, passwd, 10, 0);
     //receiving status of account
     int readval=recv(socket_fd,&num,sizeof(num),0);
+    printf("%d",num);
 
     return num;
 }
@@ -143,7 +144,7 @@ void menu(int socket_fd){
             printf("\nEnter Password: ");
             scanf("%s",passwd);
             //function to send user credentials
-            if(check_credentials(option1, socket_fd, user_name, passwd)){
+            if(check_credentials(option1, socket_fd, user_name, passwd) == 1){
                 printf("\nSign Up Successfull ...\n");
                 goto home;
             }
@@ -159,7 +160,7 @@ void menu(int socket_fd){
             printf("\nEnter Password: ");
             scanf("%s",passwd);
             //function to send user credentials
-            if(check_credentials(option1, socket_fd, user_name, passwd)){
+            if(check_credentials(option1, socket_fd, user_name, passwd) == 1){
                 printf("\nLog In Succesfull ...\n");
                 goto login;
             }

@@ -63,14 +63,17 @@ struct UserNode* search_using_username(char* str)
     {
     printf("hello\n");
     }
-    while( itr != NULL){
+    printf("hello1\n");
+    printf("hello3.1\n");
+    /*while( itr != NULL){
         printf("hello2\n");
         if(strcmp(itr->username,str) == 0){
             return itr;
         }
         itr = itr->next;
-    }                   
-    printf("hello3");
+    }  */
+
+    printf("hello3\n");
     return itr;                                                    
 }
 
@@ -117,17 +120,24 @@ int add_new_user_node(char* uname,char* psd)
     for(int i = 0; uname[i]; i++){
         uname[i] = tolower(uname[i]);
     }
-    struct UserNode* input = search_using_username(uname);
-    printf("%s",uname);
+    struct UserNode* input = NULL;//search_using_username(uname);
+    printf("%s\n",uname);
     if( input!=NULL ){
-        printf("Username already exists");
+        printf("Username already exists\n");
         return 0;
     }
     else{
         struct UserNode* newNode = getNewUserNode(uname,psd,";",-1);
-        tail1->next = newNode;
-        tail1 = newNode;
+        if(tail1 == NULL){
+            tail1 = newNode;
+            head1 = newNode;
+        }
+        else{
+            tail1->next = newNode;
+            tail1 = newNode;
+        }
         ++l_size;
+        printf("Username added\n");
         return 1;
     }
 }

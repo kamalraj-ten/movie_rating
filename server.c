@@ -4,9 +4,11 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <stdlib.h>
+#include <arpa/inet.h>
 
 #include "movie.h"
 #include "file_manip.c"
+#include "userfile_manip.c"
 
 
 #define BUFFERSIZE 1024
@@ -86,6 +88,7 @@ int main()
             recv(client_fd, passwd, sizeof(passwd), 0);
 
             int status = add_new_user_node(user_name, passwd);
+            printf("%d", status);
             send(client_fd,&status,sizeof(status),0);
             if(!status) break;
             
