@@ -55,7 +55,7 @@ void printll();
 
 void copyFromNodeToUser(struct UserNode* node, struct User* user);
 struct UserNode* search_using_username(char* str);
-int add_new_movie(char* uname,char *mname,float rating);
+float add_new_movie(char* uname,char *mname,float rating);
 int add_new_user_node(char* uname,char* psd);
 void write_userfile();
 void read_userfile();

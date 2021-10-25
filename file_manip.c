@@ -119,16 +119,19 @@ void add_new_movie_node(char* movieName, float rating,char* uName){
             i++;
         }
         //adding movie to the user's rated list  and function returns the previous rating if user rated already
-        int prerating=add_new_movie(uName,movieName,rating);               
+        float prerating=add_new_movie(uName,movieName,rating);
+        printf("Prerating:%f\n",prerating);
         
         if(f==1)          // changing the user's previous rating to new rating
         {
-           int sum=(input->rating)*(i+1);
+           float sum=(input->rating)*(float)(i);
            if(prerating!=-1)
            {
-              sum=sum-prerating+rating;                         
+              printf("Sum:%f\n",sum);
+              sum=sum-prerating+rating;   
+              printf("Sum:%f and i:%d\n",sum,i);                      
            }
-           input->rating=sum/(i+1);
+           input->rating=sum/(float)(i);
         }
         else if(f==0)          // adding the user to movie's user list
         {
@@ -139,7 +142,8 @@ void add_new_movie_node(char* movieName, float rating,char* uName){
 
     }
     else{          //if movie is not present
-        int prerating=add_new_movie(uName,movieName,rating);
+        float prerating=add_new_movie(uName,movieName,rating);
+        printf("Prerating:%f\n",prerating);
         char user[10][40];
         strcpy(user[0],uName);
         strcpy(user[1],";");
