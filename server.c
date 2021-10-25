@@ -76,18 +76,17 @@ int main()
     printf("client connected\n");
     opt=0;
     int opt1 = 0;
-    
+    char user_name[NAMESIZE], passwd[PASSWORD];
     while(1){
-        
-        char user_name[NAMESIZE], passwd[PASSWORD];
         home:
         recv(client_fd, &opt1, sizeof(int), 0);
         printf("option1: %d\n",opt1);
         if(opt1 == 1){
             //Sign Up
+            printf("entered\n");
             recv(client_fd, user_name, sizeof(user_name), 0);
             recv(client_fd, passwd, sizeof(passwd), 0);
-
+            printf("%s %s\n",user_name,passwd);
             int status = add_new_user_node(user_name, passwd);
             printf("%d", status);
             send(client_fd,&status,sizeof(status),0);
@@ -97,7 +96,9 @@ int main()
             }
             else{
                 printf("error\n");
-                break;           }      
+                goto home; 
+                } 
+        }
         else if(opt1 == 2){
             //Log In
             recv(client_fd, user_name, sizeof(user_name), 0);
@@ -109,22 +110,23 @@ int main()
                 status = 1;
             }
             else{
+                printf("Password:%s\n",user->passwd);
                 status = 0;
             }
             send(client_fd,&status,sizeof(status),0);
-            printf("%d",status);
+            printf("Status:%d\n",status);
             if(status){
-                
+                break;
             }
             else{
                 printf("error\n");
-                break;
+                goto home;
             }
         }
         else if(opt1 == EXIT){
             break;
-        }
-    while(1){
+        }}
+    while(opt1!=EXIT){
         recv(client_fd, &opt, sizeof(int), 0);
         printf("option: %d\n",opt);
         if( opt == ADD_RATING){
@@ -161,11 +163,10 @@ int main()
                 cur = cur->next;
             }
         }else if( opt == EXIT ){
-            break;
+            goto home;
         }
-    }
+        }
     write_file();
     write_userfile();
-    }
     return 0;
 }

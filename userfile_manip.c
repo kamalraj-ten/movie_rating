@@ -122,7 +122,7 @@ int add_new_user_node(char* uname,char* psd)
     for(int i = 0; uname[i]; i++){
         uname[i] = tolower(uname[i]);
     }
-    struct UserNode* input = NULL;//search_using_username(uname);
+    struct UserNode* input = search_using_username(uname);
     printf("%s\n",uname);
     if( input!=NULL ){
         printf("Username already exists\n");
@@ -131,8 +131,8 @@ int add_new_user_node(char* uname,char* psd)
     else{
         struct UserNode* newNode = getNewUserNode(uname,psd,";",-1);
         if(tail1 == NULL){
-            tail1 = newNode;
             head1 = newNode;
+            tail1 = head1;
         }
         else{
             tail1->next = newNode;
