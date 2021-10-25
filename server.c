@@ -79,6 +79,7 @@ int main()
     
     while(1){
         char user_name[NAMESIZE], passwd[PASSWORD];
+        home:
         recv(client_fd, &opt1, sizeof(int), 0);
         printf("option: %d\n",opt1);
         if(opt1 == 1){
@@ -89,17 +90,24 @@ int main()
             int status = add_new_user_node(user_name, passwd);
             printf("%d", status);
             send(client_fd,&status,sizeof(status),0);
-            if(!status) break;
-            
+            if(status)
+            {
+                write_userfile();
+                goto home;
+            }
+            else{
+                printf("error\n");
+                break;
+            }
         }
         else if(opt1 == 2){
             //Log In
-            recv(client_fd, user_name, 40, 0);
-            recv(client_fd, passwd, 10, 0);
-
+            recv(client_fd, user_name, sizeof(user_name), 0);
+            recv(client_fd, passwd, sizeof(passwd), 0);
+            printf("%s %s\n",user_name,passwd);
             struct UserNode* user = search_using_username(user_name);
-            int status ;
-            if(user != NULL || strcmp(user->passwd ,passwd) == 0){
+            int status;
+            if(user != NULL && strcmp(user->passwd ,passwd) == 0){
                 status = 1;
             }
             else{
@@ -151,6 +159,7 @@ int main()
             break;
         }
     }
+    write_userfile();
     write_file();
     }
     return 0;
