@@ -169,7 +169,7 @@ void printll(){
 
 void write_file(){
     FILE *outfile;
-	outfile = fopen ("Movie.txt", "w");
+	outfile = fopen ("Movie.dat", "wb");
 	if (outfile == NULL){
 		fprintf(stderr, "\nError opening file\n");
 		exit (1);
@@ -202,7 +202,7 @@ void read_file() {
     head = NULL;
     tail = head;
 
-    infile = fopen ("Movie.dat", "r");
+    infile = fopen ("Movie.dat", "rb");
     if (infile == NULL){
         fprintf(stderr, "\nError opening file\n");
         exit (1);
