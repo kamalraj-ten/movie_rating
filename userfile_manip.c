@@ -58,12 +58,13 @@ struct UserNode* search_using_username(char* str)
         str[i] = tolower(str[i]);
     }
     printf("searching user %s...\n", str);
-    struct UserNode* itr = head1;
+    
     if(head1==NULL)
     {
     printf("hello\n");
     return NULL;
     }
+    struct UserNode* itr = head1;
     printf("hello1\n");
     
     while( itr != NULL){
