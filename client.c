@@ -188,20 +188,24 @@ void menu(int socket_fd){
             if(option==ADD_RATING){
                 //function to add rating
                 add_rating(option,socket_fd);
+                goto login;
             }
             else if(option==VIEW_RATING){
                 //function to view particular movie rating
                 view_rating(option,socket_fd);
+                goto login;
             }
             else if(option==VIEW_ALL_RATING){
                 //function to view all movies rating
                 view_all_rating(option,socket_fd);
+                goto login;
             }
             else if(option==EXIT){
                 send(socket_fd,&option,sizeof(option),0);
                 goto home;
             }else{
                 printf("Incorrect option\n\n");
+                goto login;
             }
         
     }
