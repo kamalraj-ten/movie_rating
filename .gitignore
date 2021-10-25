@@ -3,3 +3,5 @@ server
 notes.txt
 file_test.c
 file
+async_server
+a.out

@@ -75,9 +75,9 @@ int main()
 
     printf("client connected\n");
     opt=0;
-    int opt1 = 0;
     
     while(1){
+        int opt1 = 0;
         char user_name[NAMESIZE], passwd[PASSWORD];
         recv(client_fd, &opt1, sizeof(int), 0);
         printf("option: %d\n",opt1);
@@ -99,7 +99,7 @@ int main()
 
             struct UserNode* user = search_using_username(user_name);
             int status ;
-            if(user != NULL || strcmp(user->passwd ,passwd) == 0){
+            if(user != NULL && strcmp(user->passwd ,passwd) == 0){
                 status = 1;
             }
             else{
@@ -110,7 +110,7 @@ int main()
         }
         else if(opt1 == EXIT){
             break;
-        }
+        } 
     while(1){
         recv(client_fd, &opt, sizeof(int), 0);
         printf("option: %d\n",opt);

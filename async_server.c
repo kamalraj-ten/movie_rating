@@ -36,7 +36,7 @@ void* send_recv_req(void* args){
             recv(client_fd, name, NAMESIZE, 0);
             recv(client_fd, &rating, sizeof(float), 0);
             pthread_mutex_lock(&lock); // locking critical section
-            add_new_movie_node( name, rating);
+            add_new_movie_node( name, rating, );
             pthread_mutex_unlock(&lock); // unlocking the mutex lock
             strcpy(name,"movie rating added successfully!");
             send(client_fd,name,NAMESIZE,0);
