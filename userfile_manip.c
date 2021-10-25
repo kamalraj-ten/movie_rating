@@ -59,7 +59,7 @@ struct UserNode* search_using_username(char* str)
     }
     printf("searching user %s...\n", str);
     struct UserNode* itr = head1;
-    if(itr==NULL)
+    if(head1==NULL)
     {
     printf("hello\n");
     }
@@ -182,6 +182,7 @@ void read_userfile(){
     }
     struct User input;
     while(fread(&input, sizeof(struct User), 1, infile)){
+        printf("while\n");
         struct UserNode* newNode = getNewUserNode("\0","\0",";",-1);
         copyFromUserToNode(newNode, &input);
         if(head1 == NULL) {
