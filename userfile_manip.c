@@ -62,16 +62,17 @@ struct UserNode* search_using_username(char* str)
     if(itr==NULL)
     {
     printf("hello\n");
+    return NULL;
     }
     printf("hello1\n");
-    printf("hello3.1\n");
-    /*while( itr != NULL){
+    
+    while( itr != NULL){
         printf("hello2\n");
         if(strcmp(itr->username,str) == 0){
             return itr;
         }
         itr = itr->next;
-    }  */
+    } 
 
     printf("hello3\n");
     return itr;                                                    
