@@ -97,17 +97,14 @@ int main()
             }
             else{
                 printf("error\n");
-                break;
-            }
-            
-        }
+                break;           }      
         else if(opt1 == 2){
             //Log In
-            recv(client_fd, user_name, 40, 0);
-            recv(client_fd, passwd, 10, 0);
-
+            recv(client_fd, user_name, sizeof(user_name), 0);
+            recv(client_fd, passwd, sizeof(passwd), 0);
+            printf("%s %s\n",user_name,passwd);
             struct UserNode* user = search_using_username(user_name);
-            int status ;
+            int status;
             if(user != NULL && strcmp(user->passwd ,passwd) == 0){
                 status = 1;
             }
