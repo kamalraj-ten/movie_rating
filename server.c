@@ -7,7 +7,7 @@
 
 #include "movie.h"
 #include "file_manip.c"
-#include "userfile_manip.c"
+
 
 #define BUFFERSIZE 1024
 
@@ -30,6 +30,7 @@ int main()
     
     // reading the file to a linked list
     read_file();
+    read_userfile();
     
     printll();
     int server_fd = socket(PF_INET, SOCK_STREAM, 0);
@@ -71,22 +72,39 @@ int main()
         return -1;
     }
 
-    printf("client connected\n")
+    printf("client connected\n");
     opt=0;
     int opt1 = 0;
-    char user_name[40], passwd[10];
+    
     while(1){
+        char user_name[NAMESIZE], passwd[PASSWORD];
         recv(client_fd, &opt1, sizeof(int), 0);
         printf("option: %d\n",opt);
         if(opt1 == 1){
             //Sign Up
             recv(client_fd, user_name, 40, 0);
             recv(client_fd, passwd, 10, 0);
+
+            int status = add_new_user_node(user_name, passwd);
+            send(client_fd,&status,sizeof(status),0);
+            if(!status) break;
+            
         }
         else if(opt1 == 2){
             //Log In
             recv(client_fd, user_name, 40, 0);
             recv(client_fd, passwd, 10, 0);
+
+            struct UserNode* user = search_using_username(user_name);
+            int status ;
+            if(user != NULL || strcmp(user->passwd ,passwd) == 0){
+                status = 1;
+            }
+            else{
+                status = 0;
+            }
+            send(client_fd,&status,sizeof(status),0);
+            if(!status) break;
         }
         else if(opt1 == EXIT){
             break;
@@ -95,18 +113,19 @@ int main()
         recv(client_fd, &opt, sizeof(int), 0);
         printf("option: %d\n",opt);
         if( opt == ADD_RATING){
-            char name[NAMESIZE];
+            char mov_name[NAMESIZE];
+            char msg[NAMESIZE];
             float rating;
-            int readval = recv(client_fd, name, NAMESIZE, 0);
+            int readval = recv(client_fd, mov_name, NAMESIZE, 0);
             readval = recv(client_fd, &rating, sizeof(float), 0);
-            add_new_movie_node( name, rating);
-            strcpy(name,"movie rating added successfully!");
-            send(client_fd,name,NAMESIZE,0);
+            add_new_movie_node( mov_name, rating, user_name);
+            strcpy(msg,"movie rating added successfully!");
+            send(client_fd,msg,NAMESIZE,0);
             write_file();
         }else if( opt == VIEW_RATING){
-            char name[NAMESIZE];
-            recv(client_fd,name,NAMESIZE,0);
-            struct MovieNode* res = search_using_name(name);
+            char mov_name[NAMESIZE];
+            recv(client_fd,mov_name,NAMESIZE,0);
+            struct MovieNode* res = search_using_name(mov_name);
             if(res==NULL){
                 float error=-1;
                 send(client_fd,&error,sizeof(float),0);

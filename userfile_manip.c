@@ -106,7 +106,7 @@ int add_new_movie(char* uname,char *mname,float rating)                  //to ad
     }
     return prerating;
 }
-void add_new_user_node(char* uname,char* psd)
+int add_new_user_node(char* uname,char* psd)
 {
     for(int i = 0; uname[i]; i++){
         uname[i] = tolower(uname[i]);
@@ -115,19 +115,20 @@ void add_new_user_node(char* uname,char* psd)
     struct UserNode* input = search_using_username(uname);
     if( input!=NULL ){
         printf("Username already exists");
-        return;
+        return 0;
     }
     else{
         struct UserNode* newNode = getNewUserNode(uname,psd,";",-1);
         tail1->next = newNode;
         tail1 = newNode;
         ++l_size;
+        return 1;
     }
 }
 
 void write_userfile(){
     FILE *outfile;
-	outfile = fopen ("User.txt", "w");
+	outfile = fopen ("User.dat", "w");
 	if (outfile == NULL){
 		fprintf(stderr, "\nError opening file\n");
 		exit (1);
@@ -162,7 +163,7 @@ void read_userfile(){
 
     infile = fopen ("User.txt", "r");
     if (infile == NULL){
-        fprintf(stderr, "\nError opening file\n");
+        fprintf(stderr, "\nError opening file read_userfile\n");
         exit (1);
     }
     struct User input;

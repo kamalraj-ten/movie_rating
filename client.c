@@ -112,8 +112,8 @@ int check_credentials(int choice, int socket_fd, char* user_name, char* passwd){
     send(socket_fd,&choice,sizeof(int),0);
 
     //sending user_name & Password
-    send(sock_fd, &user_name, 40, 0);
-    send(sock_fd, &passwd, 10, 0);
+    send(socket_fd, user_name, 40, 0);
+    send(socket_fd, passwd, 10, 0);
     //receiving status of account
     int readval=recv(socket_fd,&num,sizeof(num),0);
 
@@ -134,7 +134,7 @@ void menu(int socket_fd){
         printf("2. Log In\n");
         printf("%d. Exit\n",EXIT);
         printf("Enter option: ");
-        scanf("%d",option1);
+        scanf("%d",&option1);
         getchar();
         char user_name[40], passwd[10];
         if(option1 == 1){

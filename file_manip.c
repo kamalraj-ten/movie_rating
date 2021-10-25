@@ -196,7 +196,7 @@ void read_file() {
     head = NULL;
     tail = head;
 
-    infile = fopen ("Movie.txt", "r");
+    infile = fopen ("Movie.dat", "r");
     if (infile == NULL){
         fprintf(stderr, "\nError opening file\n");
         exit (1);
