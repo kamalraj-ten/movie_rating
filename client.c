@@ -171,7 +171,6 @@ void menu(int socket_fd){
         else if(option1 == EXIT){
             send(socket_fd,&option,sizeof(option),0);
             exit_flag=1;
-            goto home;
         }
         else{
             printf("Incorrect option\n\n");

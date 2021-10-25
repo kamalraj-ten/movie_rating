@@ -79,11 +79,11 @@ int main()
     while(1){
         char user_name[NAMESIZE], passwd[PASSWORD];
         recv(client_fd, &opt1, sizeof(int), 0);
-        printf("option: %d\n",opt);
+        printf("option: %d\n",opt1);
         if(opt1 == 1){
             //Sign Up
-            recv(client_fd, user_name, 40, 0);
-            recv(client_fd, passwd, 10, 0);
+            recv(client_fd, user_name, sizeof(user_name), 0);
+            recv(client_fd, passwd, sizeof(passwd), 0);
 
             int status = add_new_user_node(user_name, passwd);
             send(client_fd,&status,sizeof(status),0);
