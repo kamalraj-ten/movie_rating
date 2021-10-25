@@ -145,8 +145,14 @@ void add_new_movie_node(char* movieName, float rating,char* uName){
         strcpy(user[1],";");
         struct MovieNode* newNode = getNewNode(movieName,rating,user);
         newNode->id = getNewId();
+        if(tail==NULL)
+        {
+            tail=newNode;
+            head=newNode;
+        }
+        else{
         tail->next = newNode;
-        tail = newNode;
+        tail = newNode;}
         ++ll_size;
     }
 

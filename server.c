@@ -8,7 +8,6 @@
 #include "movie.h"
 #include "file_manip.c"
 
-
 #define BUFFERSIZE 1024
 
 //========= GLOBAL VARIABLES ==============================
