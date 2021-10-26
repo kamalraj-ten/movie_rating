@@ -8,6 +8,7 @@
 
 #include "movie.h"
 #include "file_manip.c"
+#include "userfile_manip.c"
 
 #define BUFFERSIZE 1024
 
@@ -25,22 +26,107 @@ void printMovie(struct Movie m) {
 }
 
 //========= END MOVIE DEFINITION AND FUNCTIONS ==============
+
+struct UserNode* entryControl (int client_fd) {
+    char user_name[NAMESIZE], passwd[PASSWORD];
+    int opt1 = 0;
+
+    while (1) {
+
+        home:
+        recv(client_fd, &opt1, sizeof(int), 0);
+        printf("option1: %d\n",opt1);
+        if(opt1 == 1){
+            //Sign Up
+            printf("entered\n");
+            recv(client_fd, user_name, sizeof(user_name), 0);
+            recv(client_fd, passwd, sizeof(passwd), 0);
+            printf("%s %s\n",user_name,passwd);
+
+            pthread_mutex_lock(&lock);
+            int status = add_new_user_node(user_name, passwd);
+            pthread_mutex_unlock(&lock);
+
+            printf("%d", status);
+            send(client_fd,&status,sizeof(status),0);
+            if(status){
+                write_userfile();
+                goto home;
+            }
+            else{
+                printf("error\n");
+                goto home; 
+            } 
+        }
+        else if(opt1 == 2){
+            //Log In
+            recv(client_fd, user_name, sizeof(user_name), 0);
+            recv(client_fd, passwd, sizeof(passwd), 0);
+            printf("%s %s\n",user_name,passwd);
+
+            pthread_mutex_lock(&lock);
+            struct UserNode* user = search_using_username(user_name);
+            pthread_mutex_unlock(&lock);
+
+            int status;
+            if(user != NULL && strcmp(user->passwd ,passwd) == 0){
+                status = 1;
+            }
+            else{
+                printf("Password:%s\n",user->passwd);
+                status = 0;
+            }
+            send(client_fd,&status,sizeof(status),0);
+            printf("Status:%d\n",status);
+            if(status){
+                return user; // username - successful login
+            }
+            else{
+                printf("error\n");
+                goto home;
+            }
+        }
+        else if(opt1 == EXIT){
+            return NULL; // exit return
+        }
+        
+    }
+
+}
+
 void* send_recv_req(void* args){
+    printf("new client connected\n");
     int client_fd = *(int*)args,opt=-1;
+
+    struct UserNode* user = entryControl(client_fd); // signup and login
+    if (user == NULL ) {
+        printf("(%s) exiting client connection...\n", "not found");
+        return NULL;
+    }
+
     char name[NAMESIZE];
     float rating;
     while(opt != EXIT){
         bzero(name,NAMESIZE);
         recv(client_fd, &opt, sizeof(int), 0);
+
+        // =============== ADD RATING ===========
+        // add rating and change rating are same for file system
+        // same option for both
         if( opt == ADD_RATING){
+            printf("(%s) add a movie\n", user->username);
             recv(client_fd, name, NAMESIZE, 0);
             recv(client_fd, &rating, sizeof(float), 0);
             pthread_mutex_lock(&lock); // locking critical section
-            add_new_movie_node( name, rating, );
+            add_new_movie_node( name, rating, user->username);
             pthread_mutex_unlock(&lock); // unlocking the mutex lock
-            strcpy(name,"movie rating added successfully!");
+            strcpy(name,"movie rating added successfully!\n");
             send(client_fd,name,NAMESIZE,0);
-        }else if( opt == VIEW_RATING){
+        }
+        
+        // ================= VIEW RATING ===============
+        else if( opt == VIEW_RATING){
+            printf("(%s) view rating\n", user->username);
             recv(client_fd,name,NAMESIZE,0);
             pthread_mutex_lock(&lock);
             struct MovieNode* res = search_using_name(name);
@@ -52,7 +138,11 @@ void* send_recv_req(void* args){
                 rating = res->rating;
                 send(client_fd,&rating, sizeof(float),0);
             }
-        }else if( opt == VIEW_ALL_RATING){
+        }
+        
+        //=============== VIEW ALL RATING =================
+        else if( opt == VIEW_ALL_RATING){
+            printf("(%s) view all rating\n", user->username);
             pthread_mutex_lock(&lock);
             send(client_fd,&ll_size,sizeof(int),0);
             struct MovieNode* cur = head;
@@ -66,12 +156,19 @@ void* send_recv_req(void* args){
             pthread_mutex_unlock(&lock);
         }
     }
+    pthread_mutex_lock(&lock);
+    write_file();
+    write_userfile();
+    pthread_mutex_unlock(&lock);
+
+    printf("(%s) exiting client connection...\n", user->username);
 }
 
 int main(){
 
     // reading the file to a linked list
-    read_file();    
+    read_file(); 
+    read_userfile();   
     printll();
 
     int server_fd = socket(PF_INET, SOCK_STREAM, 0);
@@ -109,6 +206,7 @@ int main(){
     }
 
     while(1){
+
         struct sockaddr_in client_addr;
         int client_fd, addr_len = sizeof(client_addr);
         if ((client_fd = accept(server_fd, (struct sockaddr *)&client_addr, (socklen_t *)&addr_len)) < 0){
@@ -117,8 +215,15 @@ int main(){
         }
         pthread_t tid;
         pthread_create(&tid,NULL,send_recv_req,&client_fd);
+
+        // char acceptChoice;
+        // printf("\nShould the server stop(y/n):");
+        // scanf("%c", &acceptChoice);
+
+        // if (acceptChoice == 'y') break;
     }
     pthread_mutex_destroy(&lock);
     write_file();
+    write_userfile();
     return 0;
 }

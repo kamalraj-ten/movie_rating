@@ -179,14 +179,16 @@ void menu(int socket_fd){
         }
         login:
             printf("%d. Add new movie rating\n",ADD_RATING);
+            printf("%d. modify movie rating\n", MOD_RATING);
             printf("%d. View given movie rating\n",VIEW_RATING);
             printf("%d. View all movie rating\n",VIEW_ALL_RATING);
             printf("%d. Exit\n",EXIT);
             printf("enter option: ");
             scanf("%d",&option);
             getchar();
-            if(option==ADD_RATING){
+            if(option==ADD_RATING || option == MOD_RATING){
                 //function to add rating
+                option = ADD_RATING;
                 add_rating(option,socket_fd);
                 goto login;
             }
