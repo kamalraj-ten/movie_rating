@@ -79,7 +79,7 @@ struct UserNode* search_using_username(char* str)
     return itr;                                                    
 }
 
-int add_new_movie(char* uname,char *mname,float rating)                  //to add movie to the user's  rating list
+float add_new_movie(char* uname,char *mname,float rating)                  //to add movie to the user's  rating list
 {
     struct UserNode* input = search_using_username(uname);
     if(input==NULL)
@@ -87,7 +87,8 @@ int add_new_movie(char* uname,char *mname,float rating)                  //to ad
         printf("Username does not exist to add movie");
         return -1;
     }
-    int i=0,f=0,prerating;
+    int i=0,f=0;
+    float prerating;
     while(1)
     {
       if(strcmp(input->movie[i].film,mname)==0)
@@ -122,7 +123,7 @@ int add_new_user_node(char* uname,char* psd)
     for(int i = 0; uname[i]; i++){
         uname[i] = tolower(uname[i]);
     }
-    struct UserNode* input = NULL;//search_using_username(uname);
+    struct UserNode* input = search_using_username(uname);
     printf("%s\n",uname);
     if( input!=NULL ){
         printf("Username already exists\n");
@@ -131,8 +132,8 @@ int add_new_user_node(char* uname,char* psd)
     else{
         struct UserNode* newNode = getNewUserNode(uname,psd,";",-1);
         if(tail1 == NULL){
-            tail1 = newNode;
             head1 = newNode;
+            tail1 = head1;
         }
         else{
             tail1->next = newNode;

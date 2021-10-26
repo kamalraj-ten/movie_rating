@@ -106,17 +106,15 @@ void view_all_rating(int choice,int socket_fd)
 }
 
 //Function to check user credentials
-int check_credentials(int choice, int socket_fd, char* user_name, char* passwd){
+int check_credentials(int choice,int socket_fd, char user_name[40], char passwd[10]){
     int num;
-
-    //sending the user choice to server
-    send(socket_fd,&choice,sizeof(choice),0);
-
+    send(socket_fd,&choice,sizeof(int),0);
     //sending user_name & Password
-    send(socket_fd, user_name, 40, 0);
+    send(socket_fd, user_name,40, 0);
     send(socket_fd, passwd, 10, 0);
+    printf("Sent\n");
     //receiving status of account
-    int readval=recv(socket_fd,&num,sizeof(num),0);
+    int readval=recv(socket_fd,&num,sizeof(int),0);
     printf("%d",num);
 
     return num;
@@ -145,7 +143,7 @@ void menu(int socket_fd){
             printf("\nEnter Password: ");
             scanf("%s",passwd);
             //function to send user credentials
-            if(check_credentials(option1, socket_fd, user_name, passwd) == 1){
+            if(check_credentials(option1,socket_fd, user_name, passwd) == 1){
                 printf("\nSign Up Successfull ...\n");
                 goto home;
             }
@@ -161,7 +159,7 @@ void menu(int socket_fd){
             printf("\nEnter Password: ");
             scanf("%s",passwd);
             //function to send user credentials
-            if(check_credentials(option1, socket_fd, user_name, passwd) == 1){
+            if(check_credentials(option1,socket_fd, user_name, passwd) == 1){
                 printf("\nLog In Succesfull ...\n");
                 goto login;
             }
@@ -171,9 +169,9 @@ void menu(int socket_fd){
             }
         }
         else if(option1 == EXIT){
-            send(socket_fd,&option,sizeof(option),0);
+            send(socket_fd,&option1,sizeof(option1),0);
             exit_flag=1;
-            exit(0);
+            break;
         }
         else{
             printf("Incorrect option\n\n");
