@@ -155,6 +155,30 @@ void* send_recv_req(void* args){
             }
             pthread_mutex_unlock(&lock);
         }
+
+        //=============== VIEW USER RATINGS =============
+        else if (opt == VIEW_USER_RATINGS) {
+            printf("(%s) view all user rating\n", user->username);
+
+            pthread_mutex_lock(&lock);
+            //sending size
+            int movie_length = 0;
+            for (int i = 0; i < 20; ++i) {
+                if (user->movie[i].filmrating >= 0.0) ++movie_length;
+                else break;
+            }
+            printf("user movie list size: %d\n", movie_length);
+            send(client_fd, &movie_length, sizeof movie_length, 0);
+            
+            //sending data
+            for (int i = 0; i < movie_length; ++i) {
+                strcpy(name, user->movie[i].film);
+                send(client_fd, name, NAMESIZE, 0);
+                rating = user->movie[i].filmrating;
+                send(client_fd, &rating, sizeof rating, 0);
+            }
+            pthread_mutex_unlock(&lock);
+        }
     }
     pthread_mutex_lock(&lock);
     write_file();

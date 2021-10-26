@@ -8,6 +8,9 @@
 #include "movie.h"
 
 void menu();
+void yellow();
+void red();
+void reset();
 
 int main(){
     int socket_fd = socket(PF_INET, SOCK_STREAM, 0);
@@ -55,7 +58,9 @@ void add_rating(int choice,int socket_fd){
     send(socket_fd,mov_name,NAMESIZE,0);
     send(socket_fd,&movierating,sizeof(float),0);
     recv(socket_fd,mov_name,NAMESIZE,0);
+    yellow();
     printf("%s\n\n",mov_name);
+    reset();
 }
 
 //Function to view rating of particular movie
@@ -76,9 +81,13 @@ void view_rating(int choice,int socket_fd)
    send(socket_fd,mov_name,NAMESIZE,0);
    readval=recv(socket_fd,&movierating,sizeof(movierating),0);
    if(movierating==-1){
+       red();
        printf("Movie Not Found!!\n\n");
+       reset();
    }else{
+       yellow();
        printf("Movie Rating is: %.2f\n\n",movierating);
+       reset();
    }
 }
 
@@ -96,12 +105,14 @@ void view_all_rating(int choice,int socket_fd)
   int readval=recv(socket_fd,&num,sizeof(num),0);
   
   //Loop to receive movie details from user and display it
+  yellow();
   while(i<num){
         readval=recv(socket_fd,mov_name,sizeof(mov_name),0);
         readval=recv(socket_fd,&movierating,sizeof(movierating),0);
         printf("Record: %d\nMovie Name: %s\nMovie Rating: %.2f\n\n",i+1,mov_name,movierating);
         i++;
    }
+   reset();
    printf("\n\n");
 }
 
@@ -118,6 +129,29 @@ int check_credentials(int choice,int socket_fd, char user_name[40], char passwd[
     printf("%d",num);
 
     return num;
+}
+
+void view_user_rating(int choice, int socket_fd) {
+    int num,i=0;
+    float movierating;
+    char mov_name[NAMESIZE];
+    
+    //sending the user choice to server
+    send(socket_fd,&choice,sizeof(int),0);
+    
+    //receiving number of movies present in file
+    int readval=recv(socket_fd,&num,sizeof(num),0);
+    yellow();
+    printf("\n---------- MY RATINGS -----------\n");
+    //Loop to receive movie details from user and display it
+    while(i<num){
+            readval=recv(socket_fd,mov_name,sizeof(mov_name),0);
+            readval=recv(socket_fd,&movierating,sizeof(movierating),0);
+            printf("Record: %d\nMovie Name: %s\nMovie Rating: %.2f\n\n",i+1,mov_name,movierating);
+            i++;
+    }
+    reset();
+    printf("\n\n");
 }
 
 
@@ -160,11 +194,15 @@ void menu(int socket_fd){
             scanf("%s",passwd);
             //function to send user credentials
             if(check_credentials(option1,socket_fd, user_name, passwd) == 1){
+                yellow();
                 printf("\nLog In Succesfull ...\n");
+                reset();
                 goto login;
             }
             else{
+                red();
                 printf("\ninvalid username password\n");
+                reset();
                 goto home;
             }
         }
@@ -174,7 +212,9 @@ void menu(int socket_fd){
             break;
         }
         else{
+            red();
             printf("Incorrect option\n\n");
+            reset();
             goto home;
         }
         login:
@@ -182,6 +222,7 @@ void menu(int socket_fd){
             printf("%d. modify movie rating\n", MOD_RATING);
             printf("%d. View given movie rating\n",VIEW_RATING);
             printf("%d. View all movie rating\n",VIEW_ALL_RATING);
+            printf("%d. View all my ratings\n", VIEW_USER_RATINGS);
             printf("%d. Exit\n",EXIT);
             printf("enter option: ");
             scanf("%d",&option);
@@ -201,14 +242,31 @@ void menu(int socket_fd){
                 //function to view all movies rating
                 view_all_rating(option,socket_fd);
                 goto login;
+            } else if (option == VIEW_USER_RATINGS) {
+                view_user_rating(option, socket_fd);
+                goto login;
             }
             else if(option==EXIT){
                 send(socket_fd,&option,sizeof(option),0);
                 goto home;
             }else{
+                red();
                 printf("Incorrect option\n\n");
+                reset();
                 goto login;
             }
         
     }
+}
+
+void red () {
+  printf("\033[1;31m");
+}
+
+void yellow() {
+  printf("\033[1;33m");
+}
+
+void reset () {
+  printf("\033[0m");
 }

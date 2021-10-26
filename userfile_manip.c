@@ -61,21 +61,17 @@ struct UserNode* search_using_username(char* str)
     
     if(head1==NULL)
     {
-    printf("hello\n");
     return NULL;
     }
     struct UserNode* itr = head1;
-    printf("hello1\n");
     
     while( itr != NULL){
-        printf("hello2\n");
         if(strcmp(itr->username,str) == 0){
             return itr;
         }
         itr = itr->next;
     } 
 
-    printf("hello3\n");
     return itr;                                                    
 }
 
@@ -185,7 +181,6 @@ void read_userfile(){
     }
     struct User input;
     while(fread(&input, sizeof(struct User), 1, infile)){
-        printf("while\n");
         struct UserNode* newNode = getNewUserNode("\0","\0",";",-1);
         copyFromUserToNode(newNode, &input);
         if(head1 == NULL) {
