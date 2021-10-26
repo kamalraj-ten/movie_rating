@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <string.h>
@@ -172,6 +173,7 @@ void menu(int socket_fd){
         else if(option1 == EXIT){
             send(socket_fd,&option,sizeof(option),0);
             exit_flag=1;
+            exit(0);
         }
         else{
             printf("Incorrect option\n\n");
@@ -188,20 +190,24 @@ void menu(int socket_fd){
             if(option==ADD_RATING){
                 //function to add rating
                 add_rating(option,socket_fd);
+                goto login;
             }
             else if(option==VIEW_RATING){
                 //function to view particular movie rating
                 view_rating(option,socket_fd);
+                goto login;
             }
             else if(option==VIEW_ALL_RATING){
                 //function to view all movies rating
                 view_all_rating(option,socket_fd);
+                goto login;
             }
             else if(option==EXIT){
                 send(socket_fd,&option,sizeof(option),0);
-                exit_flag=1;
+                goto home;
             }else{
                 printf("Incorrect option\n\n");
+                goto login;
             }
         
     }
